@@ -1,5 +1,6 @@
 import BannerSection from "../Section/BannerSection";
 import OurServices from "../Section/OurServices";
+import PopularSection from "../Section/PopularSection";
 import SpecialOffers from "../Section/SpecialOffers";
 
 const HomeTemp = () => {
@@ -8,6 +9,7 @@ const HomeTemp = () => {
       <BannerSection />
       <SpecialOffers />
       <OurServices />
+      <PopularSection />
     </div>
   );
 };
