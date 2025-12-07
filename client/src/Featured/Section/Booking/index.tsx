@@ -82,7 +82,7 @@ const BookingMenu = () => {
         <FlightRoadCard />
         <FlightRoadCard />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center px-6">
         <PriceCard />
         <PriceCard />
         <PriceCard />
