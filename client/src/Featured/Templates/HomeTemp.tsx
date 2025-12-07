@@ -1,7 +1,7 @@
-import BannerSection from "../Section/BannerSection";
-import OurServices from "../Section/OurServices";
-import PopularSection from "../Section/PopularSection";
-import SpecialOffers from "../Section/SpecialOffers";
+import BannerSection from "../Section/Home/BannerSection";
+import OurServices from "../Section/Home/OurServices";
+import PopularSection from "../Section/Home/PopularSection";
+import SpecialOffers from "../Section/Home/SpecialOffers";
 
 const HomeTemp = () => {
   return (
