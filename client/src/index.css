@@ -7,3 +7,12 @@ html,
 body {
   font-family: "Inter", sans-serif;
 }
+
+
+.booking-header path {
+  fill: purple !important; 
+}
+
+.default-header path {
+  fill: white !important;
+}

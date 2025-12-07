@@ -1,7 +1,9 @@
 import { ChevronDown, List } from "lucide-react";
+
 const Header = () => {
+
   return (
-    <header className="flex items-center justify-between p-8 relative z-20">
+    <header className={`flex items-center justify-between p-8 relative z-22 `}>
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
