@@ -66,7 +66,7 @@ export default function Footer() {
                 height="33"
                 fill="none"
                 viewBox="0 0 201 33"
-                class="SvgIcon_root__8IE4V Footer_skillRowTravel__Ra_Sd SvgIcon_size_20__5gsbQ"
+                className="SvgIcon_root__8IE4V Footer_skillRowTravel__Ra_Sd SvgIcon_size_20__5gsbQ"
               >
                 <g fill="#fff" clip-path="url(#clip0_4468_44965)">
                   <path
@@ -382,7 +382,7 @@ export default function Footer() {
                 height="40"
                 fill="none"
                 viewBox="0 0 120 40"
-                class="SvgIcon_root__8IE4V Footer_markets_marketIco__zlfCC SvgIcon_size_20__5gsbQ"
+                className="SvgIcon_root__8IE4V Footer_markets_marketIco__zlfCC SvgIcon_size_20__5gsbQ"
               >
                 <rect
                   width="119"
@@ -413,7 +413,7 @@ export default function Footer() {
                 height="40"
                 fill="none"
                 viewBox="0 0 120 40"
-                class="SvgIcon_root__8IE4V Footer_markets_marketIco__zlfCC SvgIcon_size_20__5gsbQ"
+                className="SvgIcon_root__8IE4V Footer_markets_marketIco__zlfCC SvgIcon_size_20__5gsbQ"
               >
                 <rect
                   width="119"

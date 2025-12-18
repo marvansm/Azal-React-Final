@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "flights",
+  "info": {
+    "singularName": "flight",
+    "pluralName": "flights",
+    "displayName": "Flight",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "origin": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::location.location",
+      "inversedBy": "flightsFrom"
+    },
+    "destination": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::location.location",
+      "inversedBy": "flightsTo"
+    },
+    "departureDate": {
+      "type": "datetime"
+    },
+    "arrivalDate": {
+      "type": "datetime"
+    },
+    "priceEconomy": {
+      "type": "decimal"
+    },
+    "priceBusiness": {
+      "type": "decimal"
+    },
+    "flightNumber": {
+      "type": "string"
+    }
+  }
+}
