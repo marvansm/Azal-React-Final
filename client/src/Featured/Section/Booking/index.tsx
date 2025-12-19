@@ -105,14 +105,12 @@ const BookingMenu = () => {
         if (data && data.data) {
           const allFlights = data.data;
 
-          // Helper to get code regardless of Strapi version
           const getCode = (loc: any) => {
             if (!loc) return "";
             if (loc.data?.attributes) return loc.data.attributes.code;
             return loc.code || "";
           };
 
-          // Sort: Exact matches first
           const sorted = [...allFlights].sort((a: any, b: any) => {
             const aData = a.attributes || a;
             const bData = b.attributes || b;
@@ -176,7 +174,6 @@ const BookingMenu = () => {
       setSelectionStep("inbound");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      // Navigate to confirmation page
       navigate({
         to: "/confirmation",
         search: {
@@ -338,9 +335,21 @@ const BookingMenu = () => {
         }}
       />
 
-      <div className="grid grid-cols-2  gap-4 ">
-        <FlightRoadCard />
-        <FlightRoadCard />
+      <div className={`grid ${end ? "grid-cols-2" : "grid-cols-1"} gap-4`}>
+        <FlightRoadCard
+          type="outbound"
+          isActive={selectionStep === "outbound"}
+          from={fromLoc?.city || from || ""}
+          to={toLoc?.city || to || ""}
+        />
+        {end && (
+          <FlightRoadCard
+            type="inbound"
+            isActive={selectionStep === "inbound"}
+            from={toLoc?.city || to || ""}
+            to={fromLoc?.city || from || ""}
+          />
+        )}
       </div>
 
       <Swiper
