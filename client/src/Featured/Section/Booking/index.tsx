@@ -67,9 +67,7 @@ const BookingMenu = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const api = new ApiServices(
-          import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-        );
+        const api = new ApiServices(import.meta.env.VITE_API_URL);
         const data = await api.getData("/locations");
         if (data && data.data) {
           const mapped = data.data.map((item: any) => ({
@@ -95,9 +93,7 @@ const BookingMenu = () => {
       setLoading(true);
       setError(null);
       try {
-        const api = new ApiServices(
-          import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-        );
+        const api = new ApiServices(import.meta.env.VITE_API_URL);
         let query = `/flights?populate=*`;
         if (from) query += `&filters[origin][code][$eq]=${from}`;
         if (to) query += `&filters[destination][code][$eq]=${to}`;
@@ -150,9 +146,7 @@ const BookingMenu = () => {
     seatClass: "economy" | "business"
   ) => {
     try {
-      const api = new ApiServices(
-        import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-      );
+      const api = new ApiServices(import.meta.env.VITE_API_URL);
       const payload = {
         data: {
           flight: flight.id,

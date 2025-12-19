@@ -27,9 +27,7 @@ const Login = () => {
     setError(null);
 
     try {
-      const api = new ApiServices(
-        import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-      );
+      const api = new ApiServices(import.meta.env.VITE_API_URL);
       const response = await api.PostData("/auth/local", {
         identifier: formData.identifier,
         password: formData.password,

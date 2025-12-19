@@ -61,9 +61,7 @@ const PersonalCabinet = () => {
     setError(null);
 
     try {
-      const api = new ApiServices(
-        import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-      );
+      const api = new ApiServices(import.meta.env.VITE_API_URL);
 
       const payload = {
         username: formData.email,
@@ -313,7 +311,6 @@ const PersonalCabinet = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 min-h-screen bg-white font-sans">
-      {/* Left Sidebar */}
       <div className="col-span-12 md:col-span-5 lg:col-span-3 pt-[132px] px-2.5 relative overflow-hidden bg-[#0033a1] text-white">
         <div className="absolute inset-0 bg-[radial-gradient(95.22%_95.22%_at_9.5%_4.78%,rgb(14_103_227/100%)_0%,rgb(13_17_52/100%)_100%)] z-0">
           <svg

@@ -37,9 +37,7 @@ const BannerSection = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const api = new ApiServices(
-          import.meta.env.VITE_API_URL || "http://localhost:1337/api"
-        );
+        const api = new ApiServices(import.meta.env.VITE_API_URL);
         const data = await api.getData("/locations");
         if (data && data.data && Array.isArray(data.data)) {
           const mapped = data.data.map((item: any) => ({
