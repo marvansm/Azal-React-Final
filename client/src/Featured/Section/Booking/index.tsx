@@ -94,13 +94,38 @@ const BookingMenu = () => {
       setError(null);
       try {
         const api = new ApiServices(import.meta.env.VITE_API_URL);
-        let query = `/flights?populate=*`;
-        if (from) query += `&filters[origin][code][$eq]=${from}`;
-        if (to) query += `&filters[destination][code][$eq]=${to}`;
-
+        const query = `/flights?populate=*`;
         const data = await api.getData(query);
+
         if (data && data.data) {
-          setFlights(data.data);
+          const allFlights = data.data;
+
+          // Helper to get code regardless of Strapi version
+          const getCode = (loc: any) => {
+            if (!loc) return "";
+            if (loc.data?.attributes) return loc.data.attributes.code;
+            return loc.code || "";
+          };
+
+          // Sort: Exact matches first
+          const sorted = [...allFlights].sort((a: any, b: any) => {
+            const aData = a.attributes || a;
+            const bData = b.attributes || b;
+
+            const aOrigin = getCode(aData.origin);
+            const aDest = getCode(aData.destination);
+            const bOrigin = getCode(bData.origin);
+            const bDest = getCode(bData.destination);
+
+            const aMatch = aOrigin === from && aDest === to;
+            const bMatch = bOrigin === from && bDest === to;
+
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
+          });
+
+          setFlights(sorted);
         }
       } catch (err) {
         console.error("Error fetching flights:", err);
