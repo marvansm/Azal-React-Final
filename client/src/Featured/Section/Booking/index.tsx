@@ -111,27 +111,18 @@ const BookingMenu = () => {
             return loc.code || "";
           };
 
-          const sorted = [...allFlights].sort((a: any, b: any) => {
-            const aData = a.attributes || a;
-            const bData = b.attributes || b;
+          const currentFrom = selectionStep === "outbound" ? from : to;
+          const currentTo = selectionStep === "outbound" ? to : from;
 
-            const aOrigin = getCode(aData.origin);
-            const aDest = getCode(aData.destination);
-            const bOrigin = getCode(bData.origin);
-            const bDest = getCode(bData.destination);
-
-            const currentFrom = selectionStep === "outbound" ? from : to;
-            const currentTo = selectionStep === "outbound" ? to : from;
-
-            const aMatch = aOrigin === currentFrom && aDest === currentTo;
-            const bMatch = bOrigin === currentFrom && bDest === currentTo;
-
-            if (aMatch && !bMatch) return -1;
-            if (!aMatch && bMatch) return 1;
-            return 0;
+          const filtered = allFlights.filter((f: any) => {
+            const fData = f.attributes || f;
+            return (
+              getCode(fData.origin) === currentFrom &&
+              getCode(fData.destination) === currentTo
+            );
           });
 
-          setFlights(sorted);
+          setFlights(filtered);
         }
       } catch (err) {
         console.error("Error fetching flights:", err);
@@ -345,6 +336,10 @@ const BookingMenu = () => {
           isActive={selectionStep === "outbound"}
           from={fromLoc?.city || from || ""}
           to={toLoc?.city || to || ""}
+          onClick={() => {
+            setSelectionStep("outbound");
+            setSelectedOutbound(null);
+          }}
         />
         {end && (
           <FlightRoadCard
@@ -352,6 +347,11 @@ const BookingMenu = () => {
             isActive={selectionStep === "inbound"}
             from={toLoc?.city || to || ""}
             to={fromLoc?.city || from || ""}
+            onClick={() => {
+              if (selectedOutbound) {
+                setSelectionStep("inbound");
+              }
+            }}
           />
         )}
       </div>

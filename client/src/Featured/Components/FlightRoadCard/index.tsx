@@ -3,12 +3,20 @@ interface FlightRoadCardProps {
   isActive: boolean;
   from: string;
   to: string;
+  onClick?: () => void;
 }
 
-const FlightRoadCard = ({ type, isActive, from, to }: FlightRoadCardProps) => {
+const FlightRoadCard = ({
+  type,
+  isActive,
+  from,
+  to,
+  onClick,
+}: FlightRoadCardProps) => {
   return (
     <div
-      className={`bg-white rounded-lg border flex items-center overflow-hidden shadow-sm transition-all ${
+      onClick={onClick}
+      className={`bg-white rounded-lg border flex items-center overflow-hidden shadow-sm transition-all cursor-pointer ${
         isActive ? "border-[#4db3e8]" : "border-gray-200"
       }`}
     >
