@@ -27,5 +27,71 @@
   },
   "footer": {
     "allRightsReserved": "© 2024 AZAL. Bütün hüquqlar qorunur."
+  },
+  "cabinet": {
+    "login": "Daxil ol",
+    "register": "Qeydiyyat",
+    "joinProgram": "Proqrama qoşulun",
+    "marketing": {
+      "title": "Səyahətlərinizi AZAL Miles ilə unudulmaz edin!",
+      "subtitle": "Çoxsaylı üstünlüklərdən və imtiyazlardan yararlanın!",
+      "welcomeMiles": "Xoş gəldin milləri",
+      "welcomeMilesDesc": "Qeydiyyatdan keçin və ilk uçuşunuzda Xoş Gəldin Milləri qazanın.",
+      "awardTicket": "Mükafat bileti",
+      "awardTicketDesc": "Topladığınız millərlə mükafat biletləri əldə edin."
+    },
+    "stepper": {
+      "personalInfo": "Şəxsi Məlumat",
+      "documentInfo": "Sənəd Məlumatı",
+      "contactInfo": "Əlaqə Məlumatı",
+      "password": "Şifrə"
+    },
+    "form": {
+      "title": "İndi qeydiyyatdan keçin və mükafatlar dünyasının bir hissəsi olun",
+      "subtitle": "Tələb olunan məlumatları pasportunuzda olduğu kimi daxil edin.",
+      "name": "Ad",
+      "namePlaceholder": "Adınızı daxil edin",
+      "surname": "Soyad",
+      "surnamePlaceholder": "Soyadınızı daxil edin",
+      "dob": "Doğum tarixi",
+      "gender": "Cins",
+      "selectGender": "Cinsinizi seçin",
+      "male": "Kişi",
+      "female": "Qadın",
+      "docNumber": "Sənəd nömrəsi",
+      "docNumberPlaceholder": "Pasport və ya Şəxsiyyət vəsiqəsinin nömrəsi",
+      "expiryDate": "Bitmə tarixi",
+      "email": "Elektron poçt",
+      "emailPlaceholder": "ad@misal.com",
+      "phone": "Telefon nömrəsi",
+      "phonePlaceholder": "+994 -- --- -- --",
+      "pass": "Şifrə",
+      "passPlaceholder": "Ən azı 8 simvol",
+      "confirmPass": "Şifrəni təsdiqləyin",
+      "confirmPassPlaceholder": "Şifrənizi təkrar edin",
+      "back": "Geri",
+      "next": "İrəli",
+      "complete": "Qeydiyyatı tamamla",
+      "processing": "İşlənilir..."
+    },
+    "success": {
+      "title": "Qeydiyyat uğurla tamamlandı!",
+      "subtitle": "AZAL Miles-a xoş gəlmisiniz. Hesabınız uğurla yaradıldı.",
+      "returnHome": "Ana səhifəyə qayıt"
+    },
+    "login_page": {
+      "title": "AZAL Miles hesabınıza daxil olun",
+      "subtitle": "Mil və imtiyazlarınızı bir platformadan idarə edin!",
+      "membership": "Üzvlük nömrəsi",
+      "membershipPlaceholder": "Üzvlük nömrənizi daxil edin",
+      "password": "Şifrə",
+      "passwordPlaceholder": "Şifrənizi daxil edin",
+      "keepMeLoggedIn": "Xatırla",
+      "restoreAccount": "Hesab məlumatlarını bərpa edin",
+      "loginBtn": "Giriş",
+      "or": "və ya",
+      "registerBtn": "Qeydiyyat",
+      "registerGoogle": "Google ilə qeydiyyat"
+    }
   }
 }

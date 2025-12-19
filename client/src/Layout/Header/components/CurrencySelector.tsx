@@ -12,7 +12,10 @@ interface CurrencySelectorProps {
   isTransparent?: boolean;
 }
 
+import { useLoading } from "../../../Provider/LoadingProvider";
+
 const CurrencySelector = ({ isTransparent = true }: CurrencySelectorProps) => {
+  const { triggerLoading } = useLoading();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(currencies[0]);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -61,6 +64,7 @@ const CurrencySelector = ({ isTransparent = true }: CurrencySelectorProps) => {
                 selected.code === curr.code ? "bg-blue-50 font-bold" : ""
               }`}
               onClick={() => {
+                triggerLoading();
                 setSelected(curr);
                 setIsOpen(false);
               }}

@@ -1,15 +1,23 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useLocation } from "@tanstack/react-router";
 import Header from "./Header";
 import Footer from "./Footer";
+import { LoadingProvider } from "../Provider/LoadingProvider";
+
 const Layout = () => {
+  const location = useLocation();
+  const hideHeaderFooter =
+    location.pathname === "/cabinet" || location.pathname === "/login";
+
   return (
-    <div>
-      <Header />
-      <main>
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
+    <LoadingProvider>
+      <div>
+        {!hideHeaderFooter && <Header />}
+        <main>
+          <Outlet />
+        </main>
+        {!hideHeaderFooter && <Footer />}
+      </div>
+    </LoadingProvider>
   );
 };
 

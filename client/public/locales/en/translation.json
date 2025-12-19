@@ -27,5 +27,71 @@
   },
   "footer": {
     "allRightsReserved": "© 2024 AZAL. All rights reserved."
+  },
+  "cabinet": {
+    "login": "Login",
+    "register": "Register",
+    "joinProgram": "Join the program",
+    "marketing": {
+      "title": "Make your travels unforgettable with AZAL Miles!",
+      "subtitle": "Take advantage of multiple benefits and privileges!",
+      "welcomeMiles": "Welcome miles",
+      "welcomeMilesDesc": "Sign up and earn Welcome Miles on your first flight.",
+      "awardTicket": "Award ticket",
+      "awardTicketDesc": "Get award tickets with the miles you collect."
+    },
+    "stepper": {
+      "personalInfo": "Personal Information",
+      "documentInfo": "Document Information",
+      "contactInfo": "Contact Information",
+      "password": "Password"
+    },
+    "form": {
+      "title": "Register now and become part of the rewarding world",
+      "subtitle": "Enter the required information exactly as it appears on your passport.",
+      "name": "Name",
+      "namePlaceholder": "Enter your name",
+      "surname": "Surname",
+      "surnamePlaceholder": "Enter your surname",
+      "dob": "Date of birth",
+      "gender": "Gender",
+      "selectGender": "Select your gender",
+      "male": "Male",
+      "female": "Female",
+      "docNumber": "Document Number",
+      "docNumberPlaceholder": "Passport or ID Number",
+      "expiryDate": "Expiration Date",
+      "email": "Email Address",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+994 -- --- -- --",
+      "pass": "Password",
+      "passPlaceholder": "At least 8 characters",
+      "confirmPass": "Confirm Password",
+      "confirmPassPlaceholder": "Repeat your password",
+      "back": "Back",
+      "next": "Next",
+      "complete": "Complete Registration",
+      "processing": "Processing..."
+    },
+    "success": {
+      "title": "Registration Successful!",
+      "subtitle": "Welcome to AZAL Miles. Your account has been created successfully.",
+      "returnHome": "Return to Home"
+    },
+    "login_page": {
+      "title": "Log in to your AZAL Miles account",
+      "subtitle": "Manage your Miles and benefits from one platform!",
+      "membership": "Membership number",
+      "membershipPlaceholder": "Enter your membership number",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "keepMeLoggedIn": "Keep me logged in",
+      "restoreAccount": "Restore account information",
+      "loginBtn": "Login",
+      "or": "or",
+      "registerBtn": "Register",
+      "registerGoogle": "Register with Google"
+    }
   }
 }

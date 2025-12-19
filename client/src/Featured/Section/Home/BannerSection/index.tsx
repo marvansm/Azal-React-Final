@@ -37,12 +37,14 @@ const BannerSection = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const api = new ApiServices("http://localhost:1337/api");
+        const api = new ApiServices(
+          import.meta.env.VITE_API_URL || "http://localhost:1337/api"
+        );
         const data = await api.getData("/locations");
         if (data && data.data && Array.isArray(data.data)) {
           const mapped = data.data.map((item: any) => ({
             id: item.id,
-            ...item.attributes,
+            ...(item.attributes || item),
           }));
           setLocations(mapped);
         } else if (Array.isArray(data)) {
@@ -386,7 +388,7 @@ const BannerSection = () => {
                   <button
                     className="bg-blue-900 text-white px-6  flex items-center justify-center rounded-r-full hover:bg-blue-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleSearch}
-                    // disabled={!fromLocation || !toLocation || !startDate}
+                    disabled={!fromLocation || !toLocation || !startDate}
                   >
                     <Search />
                   </button>

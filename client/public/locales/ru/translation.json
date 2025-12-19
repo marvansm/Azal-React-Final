@@ -27,5 +27,71 @@
   },
   "footer": {
     "allRightsReserved": "© 2024 AZAL. Все права защищены."
+  },
+  "cabinet": {
+    "login": "Войти",
+    "register": "Регистрация",
+    "joinProgram": "Присоединиться к программе",
+    "marketing": {
+      "title": "Сделайте свои путешествия незабываемыми с AZAL Miles!",
+      "subtitle": "Воспользуйтесь множеством преимуществ и привилегий!",
+      "welcomeMiles": "Приветственные мили",
+      "welcomeMilesDesc": "Зарегистрируйтесь и получите приветственные мили за свой первый полет.",
+      "awardTicket": "Наградной билет",
+      "awardTicketDesc": "Получайте наградные билеты за накопленные мили."
+    },
+    "stepper": {
+      "personalInfo": "Личная информация",
+      "documentInfo": "Данные документа",
+      "contactInfo": "Контактная информация",
+      "password": "Пароль"
+    },
+    "form": {
+      "title": "Зарегистрируйтесь сейчас и станьте частью мира привилегий",
+      "subtitle": "Введите запрашиваемую информацию точно так, как она указана в вашем паспорте.",
+      "name": "Имя",
+      "namePlaceholder": "Введите ваше имя",
+      "surname": "Фамилия",
+      "surnamePlaceholder": "Введите вашу фамилию",
+      "dob": "Дата рождения",
+      "gender": "Пол",
+      "selectGender": "Выберите ваш пол",
+      "male": "Мужской",
+      "female": "Женский",
+      "docNumber": "Номер документа",
+      "docNumberPlaceholder": "Номер паспорта или удостоверения",
+      "expiryDate": "Срок действия",
+      "email": "Электронная почта",
+      "emailPlaceholder": "name@example.com",
+      "phone": "Номер телефона",
+      "phonePlaceholder": "+994 -- --- -- --",
+      "pass": "Пароль",
+      "passPlaceholder": "Минимум 8 символов",
+      "confirmPass": "Подтвердите пароль",
+      "confirmPassPlaceholder": "Повторите ваш пароль",
+      "back": "Назад",
+      "next": "Далее",
+      "complete": "Завершить регистрацию",
+      "processing": "Обработка..."
+    },
+    "success": {
+      "title": "Регистрация успешно завершена!",
+      "subtitle": "Добро пожаловать в AZAL Miles. Ваша учетная запись успешно создана.",
+      "returnHome": "Вернуться на главную"
+    },
+    "login_page": {
+      "title": "Войдите в свой аккаунт AZAL Miles",
+      "subtitle": "Управляйте своими милями и привилегиями на одной платформе!",
+      "membership": "Номер участника",
+      "membershipPlaceholder": "Введите номер участника",
+      "password": "Пароль",
+      "passwordPlaceholder": "Введите пароль",
+      "keepMeLoggedIn": "Оставаться в системе",
+      "restoreAccount": "Восстановить данные аккаунта",
+      "loginBtn": "Войти",
+      "or": "или",
+      "registerBtn": "Зарегистрироваться",
+      "registerGoogle": "Зарегистрироваться через Google"
+    }
   }
 }

@@ -1,6 +1,7 @@
+import { useState, useRef, useEffect } from "react";
 import { List } from "lucide-react";
 import Logo from "../../Featured/Components/Logo";
-import { useLocation } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import MainLogo from "../../Featured/Components/Logo/mainLogo";
 import CurrencySelector from "./components/CurrencySelector";
 import LanguageSelector from "./components/LanguageSelector";
@@ -10,10 +11,25 @@ const Header = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const userButtonClasses = isHomePage
     ? "text-[14px] leading-6 h-12 flex items-center gap-2 p-3 border border-transparent rounded-xl cursor-pointer text-white bg-[hsla(0,0%,100%,.1)] hover:bg-[#40b7de] duration-300"
     : "text-[14px] leading-6 h-12 flex items-center gap-2 p-3 border hover:text-white border-[#d9d9d9] rounded-xl cursor-pointer text-[#2E3034] bg-[hsla(0,0%,100%,.1)] hover:bg-[#37A6DB] duration-300";
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header className={`flex items-center justify-between p-8 relative z-22 `}>
@@ -28,19 +44,43 @@ const Header = () => {
         <CurrencySelector isTransparent={isHomePage} />
         <LanguageSelector isTransparent={isHomePage} />
 
-        <button className={userButtonClasses}>
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="4 2 16 20"
-            className="_root_1q0tt_1 _size_20_1q0tt_30"
+        <div className="relative" ref={dropdownRef}>
+          <button
+            className={userButtonClasses}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <path d="M12 2C9.247 2 7 4.247 7 7s2.247 5 5 5c2.752 0 5-2.247 5-5s-2.248-5-5-5zm0 1.5c1.942 0 3.5 1.558 3.5 3.5s-1.558 3.5-3.5 3.5A3.489 3.489 0 0 1 8.5 7c0-1.942 1.558-3.5 3.5-3.5zM6.25 14A2.261 2.261 0 0 0 4 16.25v.6c0 1.47.932 2.789 2.354 3.696C7.777 21.453 9.722 22 12 22s4.223-.547 5.645-1.454C19.069 19.639 20 18.32 20 16.85v-.6A2.261 2.261 0 0 0 17.75 14H6.25zm0 1.5h11.5c.423 0 .75.327.75.75v.6c0 .832-.536 1.714-1.661 2.431C15.714 20 14.034 20.5 12 20.5c-2.034 0-3.714-.501-4.839-1.219C6.036 18.564 5.5 17.682 5.5 16.85v-.6c0-.423.327-.75.75-.75z"></path>
-          </svg>
-          {t("header.cabinet")}
-        </button>
+            <svg
+              width="20"
+              height="20"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="4 2 16 20"
+            >
+              <path d="M12 2C9.247 2 7 4.247 7 7s2.247 5 5 5c2.752 0 5-2.247 5-5s-2.248-5-5-5zm0 1.5c1.942 0 3.5 1.558 3.5 3.5s-1.558 3.5-3.5 3.5A3.489 3.489 0 0 1 8.5 7c0-1.942 1.558-3.5 3.5-3.5zM6.25 14A2.261 2.261 0 0 0 4 16.25v.6c0 1.47.932 2.789 2.354 3.696C7.777 21.453 9.722 22 12 22s4.223-.547 5.645-1.454C19.069 19.639 20 18.32 20 16.85v-.6A2.261 2.261 0 0 0 17.75 14H6.25zm0 1.5h11.5c.423 0 .75.327.75.75v.6c0 .832-.536 1.714-1.661 2.431C15.714 20 14.034 20.5 12 20.5c-2.034 0-3.714-.501-4.839-1.219C6.036 18.564 5.5 17.682 5.5 16.85v-.6c0-.423.327-.75.75-.75z"></path>
+            </svg>
+            {t("header.cabinet")}
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute top-full right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl py-3 z-50 animate-fadeIn border border-gray-100">
+              <Link
+                to="/login"
+                className="flex items-center gap-3 px-4 py-2.5 text-[#2E3034] hover:bg-gray-50 transition font-medium"
+                onClick={() => setIsDropdownOpen(false)}
+              >
+                {t("cabinet.login")}
+              </Link>
+              <Link
+                to="/cabinet"
+                className="flex items-center gap-3 px-4 py-2.5 text-[#2E3034] hover:bg-gray-50 transition font-medium"
+                onClick={() => setIsDropdownOpen(false)}
+              >
+                {t("cabinet.joinProgram")}
+              </Link>
+            </div>
+          )}
+        </div>
+
         {isHomePage && (
           <button className="text-[14px] leading-6 h-12 flex items-center gap-2 p-3 border border-transparent rounded-xl cursor-pointer text-white bg-[hsla(0,0%,100%,.1)] hover:bg-[#40b7de] duration-300">
             <List size={20} />
