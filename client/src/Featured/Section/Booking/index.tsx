@@ -2,7 +2,7 @@ import { Search, Check } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useSearch, useNavigate } from "@tanstack/react-router";
 import ApiServices from "../../../Services/api.tsx";
 import type { Flight } from "../../../Types/strapi";
 import FlightResultCard from "../../Components/FlightResultCard";
@@ -20,9 +20,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../../Section/Home/BannerSection/datepicker-custom.css";
 
 const BookingMenu = () => {
-  const location = useLocation();
+  const search = useSearch({ from: "/booking" }) as any;
   const navigate = useNavigate();
-  const searchParams = location.search as any;
 
   const {
     from,
@@ -33,7 +32,7 @@ const BookingMenu = () => {
     children: initialChildren,
     infants: initialInfants,
     class: initialClass,
-  } = searchParams;
+  } = search;
 
   const [flights, setFlights] = useState<Flight[]>([]);
   const [loading, setLoading] = useState(false);
@@ -141,7 +140,7 @@ const BookingMenu = () => {
     };
 
     fetchFlights();
-  }, [from, to, start, selectionStep]);
+  }, [search.from, search.to, search.start, selectionStep]);
 
   const handleSearch = () => {
     if (!fromLoc || !toLoc || !startDate) return;
@@ -338,7 +337,7 @@ const BookingMenu = () => {
         }}
       />
 
-      <div className={`grid ${end ? "grid-cols-2" : "grid-cols-1"} gap-4`}>
+      <div className="grid grid-cols-2 gap-4">
         <FlightRoadCard
           type="outbound"
           isActive={selectionStep === "outbound"}
@@ -349,19 +348,17 @@ const BookingMenu = () => {
             setSelectedOutbound(null);
           }}
         />
-        {end && (
-          <FlightRoadCard
-            type="inbound"
-            isActive={selectionStep === "inbound"}
-            from={toLoc?.city || to || ""}
-            to={fromLoc?.city || from || ""}
-            onClick={() => {
-              if (selectedOutbound) {
-                setSelectionStep("inbound");
-              }
-            }}
-          />
-        )}
+        <FlightRoadCard
+          type="inbound"
+          isActive={selectionStep === "inbound"}
+          from={toLoc?.city || to || ""}
+          to={fromLoc?.city || from || ""}
+          onClick={() => {
+            if (selectedOutbound || end) {
+              setSelectionStep("inbound");
+            }
+          }}
+        />
       </div>
 
       <Swiper
