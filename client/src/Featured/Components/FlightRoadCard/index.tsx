@@ -31,26 +31,44 @@ const FlightRoadCard = ({ type, isActive, from, to }: FlightRoadCardProps) => {
         </svg>
       </div>
 
-      <div className="flex-1 px-6">
-        <p
-          className={`font-medium text-lg ${
-            isActive ? "text-[#24A8E0]" : "text-gray-400"
-          }`}
-        >
-          {type === "outbound"
-            ? "Choose outbound flight"
-            : "Choose inbound flight"}
-        </p>
-      </div>
-
-      <div className="pr-6">
-        <p
-          className={`text-sm font-medium ${
-            isActive ? "text-[#24A8E0]" : "text-gray-400"
-          }`}
-        >
-          {from} – {to}
-        </p>
+      <div className="flex-1 px-6 flex justify-between items-center">
+        <div>
+          <p
+            className={`font-medium text-lg ${
+              isActive ? "text-[#24A8E0]" : "text-gray-400"
+            }`}
+          >
+            {type === "outbound"
+              ? "Choose outbound flight"
+              : "Choose inbound flight"}
+          </p>
+        </div>
+        <div className="flex gap-8">
+          <div className="text-right">
+            <span className="text-[10px] text-gray-400 font-bold uppercase block">
+              Departure
+            </span>
+            <span
+              className={`text-sm font-bold ${
+                isActive ? "text-[#24A8E0]" : "text-gray-400"
+              }`}
+            >
+              {from}
+            </span>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] text-gray-400 font-bold uppercase block">
+              Arrival
+            </span>
+            <span
+              className={`text-sm font-bold ${
+                isActive ? "text-[#24A8E0]" : "text-gray-400"
+              }`}
+            >
+              {to}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

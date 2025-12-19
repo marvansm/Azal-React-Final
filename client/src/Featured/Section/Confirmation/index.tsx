@@ -45,17 +45,46 @@ const ConfirmationSection = () => {
             );
             if (outData?.data) {
               setOutbound(outData.data.attributes || outData.data);
+            } else {
+              const fallback = await api.getData(
+                `/flights?filters[id][$eq]=${outboundId}&populate=*`
+              );
+              if (fallback?.data?.[0])
+                setOutbound(fallback.data[0].attributes || fallback.data[0]);
             }
           } catch (err: any) {
-            if (err.response?.status === 404) setErrorStatus(404);
+            const fallback = await api.getData(
+              `/flights?filters[id][$eq]=${outboundId}&populate=*`
+            );
+            if (fallback?.data?.[0]) {
+              setOutbound(fallback.data[0].attributes || fallback.data[0]);
+            } else if (err.response?.status === 404) {
+              setErrorStatus(404);
+            }
             throw err;
           }
         }
 
         if (inboundId) {
-          const inData = await api.getData(`/flights/${inboundId}?populate=*`);
-          if (inData?.data) {
-            setInbound(inData.data.attributes || inData.data);
+          try {
+            const inData = await api.getData(
+              `/flights/${inboundId}?populate=*`
+            );
+            if (inData?.data) {
+              setInbound(inData.data.attributes || inData.data);
+            } else {
+              const fallback = await api.getData(
+                `/flights?filters[id][$eq]=${inboundId}&populate=*`
+              );
+              if (fallback?.data?.[0])
+                setInbound(fallback.data[0].attributes || fallback.data[0]);
+            }
+          } catch {
+            const fallback = await api.getData(
+              `/flights?filters[id][$eq]=${inboundId}&populate=*`
+            );
+            if (fallback?.data?.[0])
+              setInbound(fallback.data[0].attributes || fallback.data[0]);
           }
         }
       } catch (err) {
@@ -238,7 +267,10 @@ const ConfirmationSection = () => {
                   </span>
                   <div className="w-full relative flex items-center justify-between">
                     <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
-                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-gray-900 -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-[#01357E] -translate-y-1/2"></div>
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                      <Plane className="w-4 h-4 text-[#01357E] rotate-90" />
+                    </div>
                     <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
                   </div>
                   <span className="text-[11px] font-bold text-black mt-2">
@@ -410,7 +442,10 @@ const ConfirmationSection = () => {
                   </span>
                   <div className="w-full relative flex items-center justify-between">
                     <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
-                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-gray-900 -translate-y-1/2"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-[#01357E] -translate-y-1/2"></div>
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                      <Plane className="w-4 h-4 text-[#01357E] rotate-90" />
+                    </div>
                     <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
                   </div>
                   <span className="text-[11px] font-bold text-black mt-2">

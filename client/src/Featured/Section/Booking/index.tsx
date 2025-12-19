@@ -177,8 +177,12 @@ const BookingMenu = () => {
       navigate({
         to: "/confirmation",
         search: {
-          outboundId: selectedOutbound ? selectedOutbound.id : flight.id,
-          inboundId: selectedOutbound ? flight.id : undefined,
+          outboundId: selectedOutbound
+            ? selectedOutbound.documentId || selectedOutbound.id
+            : flight.documentId || flight.id,
+          inboundId: selectedOutbound
+            ? flight.documentId || flight.id
+            : undefined,
           class: seatClass,
           adults: passengers.adults,
           children: passengers.children,
