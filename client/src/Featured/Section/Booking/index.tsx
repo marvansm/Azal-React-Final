@@ -120,48 +120,46 @@ const BookingMenu = () => {
     const fetchFlights = async () => {
       setLoading(true);
       setError(null);
-      console.log("Fetching flights with params:", {
-        from,
-        to,
-        start,
-        selectionStep,
-      });
       try {
         const api = new ApiServices(import.meta.env.VITE_API_URL);
-        const query = `/flights?populate=*`;
-        const data = await api.getData(query);
+        const res = await api.getData(`/flights?populate=*`);
+        const allFlights = res?.data || [];
 
-        if (data && data.data) {
-          const allFlights = data.data;
+        const getCode = (loc: any) => {
+          if (!loc) return "";
+          const raw =
+            loc.data?.attributes?.code ||
+            loc.attributes?.code ||
+            loc.code ||
+            "";
+          return raw.trim().toUpperCase();
+        };
 
-          const getCode = (loc: any) => {
-            if (!loc) return "";
-            if (loc.data?.attributes) return loc.data.attributes.code;
-            return loc.code || "";
-          };
+        const fCode = (from || "").trim().toUpperCase();
+        const tCode = (to || "").trim().toUpperCase();
+        const curFrom = selectionStep === "outbound" ? fCode : tCode;
+        const curTo = selectionStep === "outbound" ? tCode : fCode;
 
-          const currentFrom = selectionStep === "outbound" ? from : to;
-          const currentTo = selectionStep === "outbound" ? to : from;
+        console.log("Sorting logic - Selected Step:", selectionStep);
+        console.log(`Searching for: ${curFrom} -> ${curTo}`);
 
-          const sorted = [...allFlights].sort((a: any, b: any) => {
-            const aData = a.attributes || a;
-            const bData = b.attributes || b;
+        const matches = allFlights.filter((f: any) => {
+          const d = f.attributes || f;
+          return (
+            getCode(d.origin) === curFrom && getCode(d.destination) === curTo
+          );
+        });
+        const others = allFlights.filter((f: any) => {
+          const d = f.attributes || f;
+          return (
+            getCode(d.origin) !== curFrom || getCode(d.destination) !== curTo
+          );
+        });
 
-            const aMatch =
-              getCode(aData.origin) === currentFrom &&
-              getCode(aData.destination) === currentTo;
-            const bMatch =
-              getCode(bData.origin) === currentFrom &&
-              getCode(bData.destination) === currentTo;
-
-            if (aMatch && !bMatch) return -1;
-            if (!aMatch && bMatch) return 1;
-            return 0;
-          });
-
-          console.log("Sorted flights:", sorted.length);
-          setFlights(sorted);
-        }
+        console.log(
+          `Found ${matches.length} matches and ${others.length} other flights.`
+        );
+        setFlights([...matches, ...others]);
       } catch (err) {
         console.error("Error fetching flights:", err);
         setError("Failed to load flights. Please try again.");
@@ -171,7 +169,7 @@ const BookingMenu = () => {
     };
 
     fetchFlights();
-  }, [from, to, start, selectionStep, initialClass, initialAdults]);
+  }, [from, to, selectionStep, start]);
 
   const handleSearch = () => {
     if (!fromLoc || !toLoc || !startDate) return;
