@@ -114,15 +114,23 @@ const BookingMenu = () => {
           const currentFrom = selectionStep === "outbound" ? from : to;
           const currentTo = selectionStep === "outbound" ? to : from;
 
-          const filtered = allFlights.filter((f: any) => {
-            const fData = f.attributes || f;
-            return (
-              getCode(fData.origin) === currentFrom &&
-              getCode(fData.destination) === currentTo
-            );
+          const sorted = [...allFlights].sort((a: any, b: any) => {
+            const aData = a.attributes || a;
+            const bData = b.attributes || b;
+
+            const aMatch =
+              getCode(aData.origin) === currentFrom &&
+              getCode(aData.destination) === currentTo;
+            const bMatch =
+              getCode(bData.origin) === currentFrom &&
+              getCode(bData.destination) === currentTo;
+
+            if (aMatch && !bMatch) return -1;
+            if (!aMatch && bMatch) return 1;
+            return 0;
           });
 
-          setFlights(filtered);
+          setFlights(sorted);
         }
       } catch (err) {
         console.error("Error fetching flights:", err);
