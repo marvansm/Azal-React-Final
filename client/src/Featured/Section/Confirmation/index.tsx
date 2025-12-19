@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
   Plane,
-  Clock,
   Edit2,
   Check,
   X,
-  ShieldCheck,
-  Info,
   User,
+  Briefcase,
+  RotateCcw,
 } from "lucide-react";
 import ApiServices from "../../../Services/api";
 import type { Flight } from "../../../Types/strapi";
@@ -29,10 +28,6 @@ const ConfirmationSection = () => {
   const [outbound, setOutbound] = useState<Flight | null>(null);
   const [inbound, setInbound] = useState<Flight | null>(null);
   const [loading, setLoading] = useState(true);
-  const [fareLockActive, setFareLockActive] = useState(false);
-  const [disruptionAssistance, setDisruptionAssistance] = useState<
-    "add" | "decline" | null
-  >(null);
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -128,15 +123,12 @@ const ConfirmationSection = () => {
   const totalInfants = Number(infants) || 0;
   const totalPax = totalAdults + totalChildren + totalInfants;
 
-  const totalPrice =
-    (getPrice(outbound) + getPrice(inbound)) * totalPax +
-    (fareLockActive ? 20 : 0) +
-    (disruptionAssistance === "add" ? 53 : 0);
+  const totalPrice = (getPrice(outbound) + getPrice(inbound)) * totalPax;
 
   return (
-    <div className="max-w-[1240px] mx-auto px-4 py-8 pb-32">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="max-w-[1240px] mx-auto px-4 py-8 pb-40">
+      <header className="mb-8 pl-2">
+        <h1 className="text-4xl font-normal text-gray-800 mb-2">
           Confirm selected tickets
         </h1>
         <p className="text-sm text-gray-500 font-medium">
@@ -149,139 +141,166 @@ const ConfirmationSection = () => {
         {/* Outbound Flight */}
         {outbound && (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-gray-700">
+            <div className="flex items-center gap-3 text-gray-700 pl-1">
               <Plane className="w-5 h-5 -rotate-45" />
-              <h2 className="text-xl font-bold">
-                Outbound flight: {getCity(outbound.origin)} -{" "}
-                {getCity(outbound.destination)}
+              <h2 className="text-2xl font-normal">
+                Outbound flight:{" "}
+                <span className="font-bold">
+                  {getCity(outbound.origin)} - {getCity(outbound.destination)}
+                </span>
               </h2>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex justify-between items-center mb-6">
+            <div className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 p-8">
+              <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-500/10 rounded-full flex items-center justify-center">
-                    <Plane className="w-3.5 h-3.5 text-blue-600" />
+                  <div className="w-8 h-8 rounded-full border border-blue-100 flex items-center justify-center p-1.5 overflow-hidden bg-blue-50/10">
+                    <Plane className="w-4 h-4 text-blue-400" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-bold text-blue-400">
                     Azerbaijan Airlines
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="text-xs font-bold text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50">
+                  <button className="text-sm font-bold text-gray-400 border border-gray-200 px-5 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                     Route details
                   </button>
-                  <button className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                    <Edit2 className="w-3.5 h-3.5" />
+                  <button className="p-2.5 bg-[#4BACE1] text-white rounded-full hover:bg-blue-500 transition-colors shadow-lg shadow-blue-100">
+                    <Edit2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 mb-8">
-                <div>
-                  <div className="text-xs font-bold text-gray-400 mb-1">
+              <div className="flex items-center gap-8 mb-10">
+                <div className="min-w-[80px]">
+                  <div className="text-[13px] font-bold text-gray-800 mb-1">
                     {formatDate(outbound.departureDate)}
                   </div>
-                  <div className="text-3xl font-black text-[#01357E]">
+                  <div className="text-4xl font-bold text-gray-800">
                     {formatTime(outbound.departureDate)}
                   </div>
-                  <div className="text-sm font-bold text-gray-400 mt-1 uppercase">
+                  <div className="text-[12px] font-bold text-gray-400 absolute translate-x-12 -translate-y-6">
                     {getCode(outbound.origin)}
+                  </div>
+                  <div className="text-[14px] font-bold text-gray-700 mt-1">
+                    {getCity(outbound.origin)}
+                  </div>
+                  <div className="text-[11px] font-medium text-gray-400">
+                    Terminal 1
                   </div>
                 </div>
 
-                <div className="flex-1 flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-gray-400 mb-2">
+                <div className="flex-1 flex flex-col items-center px-4 relative">
+                  <span className="text-[11px] font-bold text-gray-400 mb-2">
                     {calculateDuration(
                       outbound.departureDate,
                       outbound.arrivalDate
                     )}
                   </span>
-                  <div className="w-full relative flex items-center">
-                    <div className="w-full h-0.5 bg-gray-200"></div>
-                    <div className="absolute left-1/2 -top-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-[#37A6DB] rounded-full"></div>
+                  <div className="w-full relative flex items-center justify-between">
+                    <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-gray-900 -translate-y-1/2"></div>
+                    <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-400 mt-2 uppercase">
+                  <span className="text-[11px] font-bold text-black mt-2">
                     Without stops
                   </span>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-xs font-bold text-gray-400 mb-1">
+                <div className="min-w-[80px] text-right">
+                  <div className="text-[13px] font-bold text-gray-800 mb-1">
                     {formatDate(outbound.arrivalDate)}
                   </div>
-                  <div className="text-3xl font-black text-[#01357E]">
+                  <div className="text-4xl font-bold text-gray-800">
                     {formatTime(outbound.arrivalDate)}
                   </div>
-                  <div className="text-sm font-bold text-gray-400 mt-1 uppercase">
+                  <div className="text-[12px] font-bold text-gray-400 absolute -translate-x-12 -translate-y-6">
                     {getCode(outbound.destination)}
+                  </div>
+                  <div className="text-[14px] font-bold text-gray-700 mt-1">
+                    {getCity(outbound.destination)}
+                  </div>
+                  <div className="text-[11px] font-medium text-gray-400">
+                    Terminal A
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex flex-col">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-black text-gray-400">
-                      ECONOMY
+              <div className="grid grid-cols-2 gap-6">
+                <div className="p-6 bg-[#F8FBFE] rounded-2xl border border-blue-50/50 flex flex-col relative">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-[13px] font-bold text-[#01357E]">
+                      Economy
                     </span>
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[11px] font-bold text-blue-400 bg-white px-3 py-1 rounded-full border border-blue-100 uppercase">
                       Budget
                     </span>
                   </div>
-                  <div className="space-y-2 mb-4 flex-1">
+                  <div className="space-y-3 mb-4 flex-1 pt-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[10px] text-gray-600">
-                        <User className="w-3 h-3" />{" "}
+                      <div className="flex items-center gap-3 text-[12px] text-gray-500 font-medium">
+                        <Briefcase className="w-4 h-4 text-gray-400" />{" "}
                         <span>Baggage 1x23 kg</span>
                       </div>
-                      <X className="w-3 h-3 text-red-500" />
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Refund before departure</span>
-                      <X className="w-3 h-3 text-red-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Refund
+                        before departure
+                      </span>
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Change before departure</span>
-                      <X className="w-3 h-3 text-red-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Change
+                        before departure
+                      </span>
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-xl border-2 border-green-500 flex flex-col relative overflow-hidden">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-black text-gray-400">
-                      ECONOMY
+                <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col relative overflow-hidden ring-1 ring-gray-100">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-[13px] font-bold text-[#01357E]">
+                      Economy
                     </span>
-                    <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[11px] font-bold text-white bg-[#6FB048] px-5 py-1.5 rounded-full uppercase absolute -top-1 right-0 rounded-t-none rounded-r-none">
                       Classic
                     </span>
                   </div>
-                  <div className="space-y-2 mb-4 flex-1">
+                  <div className="space-y-3 mb-6 flex-1 pt-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[10px] text-gray-600">
-                        <User className="w-3 h-3" />{" "}
+                      <div className="flex items-center gap-3 text-[12px] text-gray-500 font-medium">
+                        <Briefcase className="w-4 h-4 text-gray-400" />{" "}
                         <span>Baggage 1x23 kg</span>
                       </div>
-                      <Check className="w-3 h-3 text-green-500" />
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Refund before departure 75€</span>
-                      <Check className="w-3 h-3 text-green-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Refund
+                        before departure 75€
+                      </span>
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Change before departure 60€</span>
-                      <Check className="w-3 h-3 text-green-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Change
+                        before departure 60€
+                      </span>
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg font-black text-pink-600">
-                      + 59.90 ₼
+                  <div className="text-center mt-auto">
+                    <div className="text-3xl font-bold text-pink-600 mb-0.5 tracking-tight">
+                      + 59.89 ₼
                     </div>
-                    <div className="text-[9px] font-bold text-gray-400 mb-2 uppercase">
+                    <div className="text-[10px] font-bold text-gray-400 mb-4 uppercase tracking-widest">
                       for 1 passenger
                     </div>
-                    <button className="w-full py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600">
+                    <button className="w-full py-3 bg-[#37A6DB] text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all shadow-md">
                       Upgrade to Economy Classic
                     </button>
                   </div>
@@ -294,139 +313,166 @@ const ConfirmationSection = () => {
         {/* Inbound Flight */}
         {inbound && (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-gray-700">
-              <Plane className="w-5 h-5 -rotate-45" />
-              <h2 className="text-xl font-bold">
-                Inbound flight: {getCity(inbound.origin)} -{" "}
-                {getCity(inbound.destination)}
+            <div className="flex items-center gap-3 text-gray-700 pl-1">
+              <Plane className="w-5 h-5 rotate-135" />
+              <h2 className="text-2xl font-normal">
+                Inbound flight:{" "}
+                <span className="font-bold">
+                  {getCity(inbound.origin)} - {getCity(inbound.destination)}
+                </span>
               </h2>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <div className="flex justify-between items-center mb-6">
+            <div className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 p-8">
+              <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-500/10 rounded-full flex items-center justify-center">
-                    <Plane className="w-3.5 h-3.5 text-blue-600" />
+                  <div className="w-8 h-8 rounded-full border border-blue-100 flex items-center justify-center p-1.5 bg-blue-50/10 overflow-hidden">
+                    <Plane className="w-4 h-4 text-blue-400" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-bold text-blue-400">
                     Azerbaijan Airlines
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="text-xs font-bold text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50">
+                  <button className="text-sm font-bold text-gray-400 border border-gray-200 px-5 py-2 rounded-xl hover:bg-gray-50 transition-colors">
                     Route details
                   </button>
-                  <button className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                    <Edit2 className="w-3.5 h-3.5" />
+                  <button className="p-2.5 bg-[#4BACE1] text-white rounded-full hover:bg-blue-500 transition-colors shadow-lg shadow-blue-100">
+                    <Edit2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 mb-8">
-                <div>
-                  <div className="text-xs font-bold text-gray-400 mb-1">
+              <div className="flex items-center gap-8 mb-10">
+                <div className="min-w-[80px]">
+                  <div className="text-[13px] font-bold text-gray-800 mb-1">
                     {formatDate(inbound.departureDate)}
                   </div>
-                  <div className="text-3xl font-black text-[#01357E]">
+                  <div className="text-4xl font-bold text-gray-800">
                     {formatTime(inbound.departureDate)}
                   </div>
-                  <div className="text-sm font-bold text-gray-400 mt-1 uppercase">
+                  <div className="text-[12px] font-bold text-gray-400 absolute translate-x-12 -translate-y-6">
                     {getCode(inbound.origin)}
+                  </div>
+                  <div className="text-[14px] font-bold text-gray-700 mt-1">
+                    {getCity(inbound.origin)}
+                  </div>
+                  <div className="text-[11px] font-medium text-gray-400">
+                    Terminal A
                   </div>
                 </div>
 
-                <div className="flex-1 flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-gray-400 mb-2">
+                <div className="flex-1 flex flex-col items-center px-4 relative">
+                  <span className="text-[11px] font-bold text-gray-400 mb-2">
                     {calculateDuration(
                       inbound.departureDate,
                       inbound.arrivalDate
                     )}
                   </span>
-                  <div className="w-full relative flex items-center">
-                    <div className="w-full h-0.5 bg-gray-200"></div>
-                    <div className="absolute left-1/2 -top-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-[#37A6DB] rounded-full"></div>
+                  <div className="w-full relative flex items-center justify-between">
+                    <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-[1.5px] bg-gray-900 -translate-y-1/2"></div>
+                    <div className="w-1.5 h-1.5 border border-gray-300 rounded-full bg-white z-10"></div>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-400 mt-2 uppercase">
+                  <span className="text-[11px] font-bold text-black mt-2">
                     Without stops
                   </span>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-xs font-bold text-gray-400 mb-1">
+                <div className="min-w-[80px] text-right">
+                  <div className="text-[13px] font-bold text-gray-800 mb-1">
                     {formatDate(inbound.arrivalDate)}
                   </div>
-                  <div className="text-3xl font-black text-[#01357E]">
+                  <div className="text-4xl font-bold text-gray-800">
                     {formatTime(inbound.arrivalDate)}
                   </div>
-                  <div className="text-sm font-bold text-gray-400 mt-1 uppercase">
+                  <div className="text-[12px] font-bold text-gray-400 absolute -translate-x-12 -translate-y-6">
                     {getCode(inbound.destination)}
+                  </div>
+                  <div className="text-[14px] font-bold text-gray-700 mt-1">
+                    {getCity(inbound.destination)}
+                  </div>
+                  <div className="text-[11px] font-medium text-gray-400">
+                    Terminal 1
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 flex flex-col">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-black text-gray-400">
-                      ECONOMY
+              <div className="grid grid-cols-2 gap-6">
+                <div className="p-6 bg-[#F8FBFE] rounded-2xl border border-blue-50/50 flex flex-col relative">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-[13px] font-bold text-[#01357E]">
+                      Economy
                     </span>
-                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[11px] font-bold text-blue-400 bg-white px-3 py-1 rounded-full border border-blue-100 uppercase">
                       Budget
                     </span>
                   </div>
-                  <div className="space-y-2 mb-4 flex-1">
+                  <div className="space-y-3 mb-4 flex-1 pt-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[10px] text-gray-600">
-                        <User className="w-3 h-3" />{" "}
+                      <div className="flex items-center gap-3 text-[12px] text-gray-500 font-medium">
+                        <Briefcase className="w-4 h-4 text-gray-400" />{" "}
                         <span>Baggage 1x23 kg</span>
                       </div>
-                      <X className="w-3 h-3 text-red-500" />
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Refund before departure</span>
-                      <X className="w-3 h-3 text-red-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Refund
+                        before departure
+                      </span>
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Change before departure</span>
-                      <X className="w-3 h-3 text-red-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Change
+                        before departure
+                      </span>
+                      <X className="w-4 h-4 text-[#D32F4D]" />
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-xl border-2 border-green-500 flex flex-col relative overflow-hidden">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-xs font-black text-gray-400">
-                      ECONOMY
+                <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col relative overflow-hidden ring-1 ring-gray-100">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="text-[13px] font-bold text-[#01357E]">
+                      Economy
                     </span>
-                    <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase">
+                    <span className="text-[11px] font-bold text-white bg-[#6FB048] px-5 py-1.5 rounded-full uppercase absolute -top-1 right-0 rounded-t-none rounded-r-none">
                       Classic
                     </span>
                   </div>
-                  <div className="space-y-2 mb-4 flex-1">
+                  <div className="space-y-3 mb-6 flex-1 pt-2">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[10px] text-gray-600">
-                        <User className="w-3 h-3" />{" "}
+                      <div className="flex items-center gap-3 text-[12px] text-gray-500 font-medium">
+                        <Briefcase className="w-4 h-4 text-gray-400" />{" "}
                         <span>Baggage 1x23 kg</span>
                       </div>
-                      <Check className="w-3 h-3 text-green-500" />
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Refund before departure 75€</span>
-                      <Check className="w-3 h-3 text-green-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Refund
+                        before departure 75€
+                      </span>
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-gray-600">
-                      <span>Change before departure 60€</span>
-                      <Check className="w-3 h-3 text-green-500" />
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 font-medium">
+                      <span className="flex items-center gap-3">
+                        <RotateCcw className="w-4 h-4 text-gray-400" /> Change
+                        before departure 60€
+                      </span>
+                      <Check className="w-4 h-4 text-[#6FB048]" />
                     </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg font-black text-pink-600">
+                  <div className="text-center mt-auto">
+                    <div className="text-3xl font-bold text-pink-600 mb-0.5 tracking-tight">
                       + 59.89 ₼
                     </div>
-                    <div className="text-[9px] font-bold text-gray-400 mb-2 uppercase">
+                    <div className="text-[10px] font-bold text-gray-400 mb-4 uppercase tracking-widest">
                       for 1 passenger
                     </div>
-                    <button className="w-full py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600">
+                    <button className="w-full py-3 bg-[#37A6DB] text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all shadow-md">
                       Upgrade to Economy Classic
                     </button>
                   </div>
@@ -437,178 +483,36 @@ const ConfirmationSection = () => {
         )}
       </div>
 
-      {/* Fare Lock */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
-            <Clock className="w-6 h-6 text-blue-500" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">
-              Fare Lock Service
-            </h3>
-            <p className="text-sm text-gray-500 font-medium">
-              No need to worry about price increases or tickets selling out —
-              now you can lock in your airfare for 72 hours.
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-4 py-4 border-t border-gray-50">
-          <button
-            onClick={() => setFareLockActive(!fareLockActive)}
-            className={`w-12 h-6 rounded-full transition-colors relative ${
-              fareLockActive ? "bg-pink-500" : "bg-gray-200"
-            }`}
-          >
-            <div
-              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                fareLockActive ? "left-7" : "left-1"
-              }`}
-            ></div>
-          </button>
-          <span className="text-lg font-black text-pink-600">Total 20 ₼</span>
-        </div>
-        <p className="text-[11px] text-blue-500 font-bold underline cursor-pointer">
-          Terms and conditions of the service
-        </p>
-        <p className="text-[11px] text-red-500 font-medium mt-4">
-          * This fee is non-refundable and will not be deducted from the total
-          amount due.
-        </p>
-      </div>
-
-      {/* Disruption Assistance */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8 relative overflow-hidden">
-        <div className="absolute right-6 top-6 bg-green-500 text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">
-          New
-        </div>
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-6 h-6 text-blue-500" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">
-              Disruption Assistance
-            </h3>
-            <p className="text-sm text-gray-500 font-medium mb-4">
-              If your flight is canceled or delayed for 2+ hours on the day of
-              travel, we'll proactively notify you and then:
-            </p>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                <Check className="w-4 h-4 text-blue-500" /> We'll rebook you on
-                a new flight on any airline (up to 5,100 ₼ total for all
-                passengers); or
-              </li>
-              <li className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                <Check className="w-4 h-4 text-blue-500" /> Get a refund of 100%
-                and keep your original flight, if you aren't happy with the
-                rebooking options
-              </li>
-              <li className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                <Info className="w-4 h-4 text-blue-500" /> Use our self-serve
-                tools or speak to an agent!
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            onClick={() => setDisruptionAssistance("add")}
-            className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-              disruptionAssistance === "add"
-                ? "border-pink-500 bg-pink-50/10"
-                : "border-gray-100 hover:border-blue-200"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  disruptionAssistance === "add"
-                    ? "border-pink-500 bg-pink-500"
-                    : "border-gray-300"
-                }`}
-              >
-                {disruptionAssistance === "add" && (
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                )}
-              </div>
-              <div>
-                <div className="text-sm font-bold">
-                  Add Disruption Assistance
-                </div>
-                <div className="text-sm font-black text-pink-600">
-                  +53 ₼{" "}
-                  <span className="text-[10px] text-gray-400 font-bold uppercase ml-1">
-                    total for all passengers
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            onClick={() => setDisruptionAssistance("decline")}
-            className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-              disruptionAssistance === "decline"
-                ? "border-pink-500 bg-pink-50/10"
-                : "border-gray-100 hover:border-blue-200"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  disruptionAssistance === "decline"
-                    ? "border-pink-500 bg-pink-500"
-                    : "border-gray-300"
-                }`}
-              >
-                {disruptionAssistance === "decline" && (
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                )}
-              </div>
-              <div>
-                <div className="text-sm font-bold">Decline</div>
-                <div className="text-[10px] text-gray-400 font-bold">
-                  I don't want to add this option
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Sticky Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
-        <div className="max-w-[1240px] mx-auto flex items-center justify-between p-4 px-6">
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#01357E] rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-sm font-bold text-gray-700">Adults: 1</span>
+      <footer className="fixed bottom-0 left-0 right-0 bg-[#BE2044] text-white shadow-[0_-8px_30px_rgba(0,0,0,0.2)] z-50 py-5">
+        <div className="max-w-[1240px] mx-auto flex items-center justify-between px-8">
+          <div className="flex items-center gap-10">
+            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl">
+              <User className="w-5 h-5" />
+              <span className="text-sm font-bold tracking-wide">
+                Adults: {totalAdults}
+              </span>
             </div>
-            <button className="text-sm font-bold text-pink-600 underline">
+            <button className="text-sm font-bold underline hover:text-white/80 transition-opacity">
               Flight Details
             </button>
           </div>
 
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-12">
             <div className="text-right">
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-[#01357E]">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-4xl font-bold tracking-tight">
                   {totalPrice.toFixed(2)}
                 </span>
-                <span className="text-sm font-black text-[#01357E]">₼</span>
+                <span className="text-xl font-bold ml-1">₼</span>
               </div>
-              <div className="text-[10px] font-bold text-gray-400 uppercase">
+              <div className="text-[11px] font-bold text-white/70 uppercase tracking-widest mt-0.5">
                 For all passengers
               </div>
             </div>
             <button
               onClick={() => navigate({ to: "/" })}
-              className="bg-pink-600 text-white px-12 py-3.5 rounded-xl font-bold text-lg hover:bg-pink-700 transition shadow-lg shadow-pink-200"
+              className="border-2 border-white text-white px-20 py-3.5 rounded-xl font-bold text-lg hover:bg-white hover:text-[#BE2044] transition-all duration-300 tracking-wide outline-none"
             >
               Confirm
             </button>
