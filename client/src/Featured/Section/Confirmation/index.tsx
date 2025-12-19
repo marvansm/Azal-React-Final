@@ -29,18 +29,26 @@ const ConfirmationSection = () => {
   const [inbound, setInbound] = useState<Flight | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
+
   useEffect(() => {
     const fetchFlights = async () => {
       setLoading(true);
+      setErrorStatus(null);
       try {
         const api = new ApiServices(import.meta.env.VITE_API_URL);
 
         if (outboundId) {
-          const outData = await api.getData(
-            `/flights/${outboundId}?populate=*`
-          );
-          if (outData?.data) {
-            setOutbound(outData.data.attributes || outData.data);
+          try {
+            const outData = await api.getData(
+              `/flights/${outboundId}?populate=*`
+            );
+            if (outData?.data) {
+              setOutbound(outData.data.attributes || outData.data);
+            }
+          } catch (err: any) {
+            if (err.response?.status === 404) setErrorStatus(404);
+            throw err;
           }
         }
 
@@ -103,6 +111,14 @@ const ConfirmationSection = () => {
     return `${hrs} h ${mins} min`;
   };
 
+  console.log("Confirmation State:", {
+    outbound,
+    inbound,
+    loading,
+    outboundId,
+    inboundId,
+  });
+
   if (loading)
     return (
       <div className="p-20 text-center font-bold text-[#01357E]">
@@ -112,8 +128,23 @@ const ConfirmationSection = () => {
 
   if (!outbound && !loading) {
     return (
-      <div className="p-20 text-center font-bold text-red-500">
-        Flight not found. Please try selecting your flight again.
+      <div className="p-20 text-center">
+        <h2 className="text-2xl font-bold text-red-500 mb-4">
+          {errorStatus === 404
+            ? "Flight data not found (404)"
+            : "Flight not found"}
+        </h2>
+        <p className="text-gray-600">
+          {errorStatus === 404
+            ? "The flight record could not be retrieved from the server. It might have been deleted or the ID is incorrect."
+            : "Please try selecting your flight again from the booking page."}
+        </p>
+        <button
+          onClick={() => navigate({ to: "/booking" })}
+          className="mt-6 px-6 py-2 bg-[#01357E] text-white rounded-lg"
+        >
+          Back to Booking
+        </button>
       </div>
     );
   }

@@ -8,7 +8,7 @@ const MainLogo = () => {
       viewBox="0 0 146 40"
       className="root_ESF logo__TW size_20__Il"
     >
-      <g clip-path="url(#clip0_3854_1389)">
+      <g clipPath="url(#clip0_3854_1389)">
         <path
           fill="#082E6A"
           d="M31.428 28.467a15.767 15.767 0 1 1-7.634-18.875l.563-.496a16.459 16.459 0 1 0 7.824 19.334l-.753.037Z"

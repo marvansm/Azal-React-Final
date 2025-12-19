@@ -9,6 +9,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "az",
+    load: "languageOnly",
     debug: true,
     interpolation: {
       escapeValue: false,
