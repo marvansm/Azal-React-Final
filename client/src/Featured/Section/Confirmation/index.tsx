@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useSearch, useNavigate } from "@tanstack/react-router";
 import {
   Plane,
   Edit2,
@@ -13,9 +13,9 @@ import ApiServices from "../../../Services/api";
 import type { Flight } from "../../../Types/strapi";
 
 const ConfirmationSection = () => {
-  const location = useLocation();
+  const search = useSearch({ from: "/confirmation" }) as any;
   const navigate = useNavigate();
-  const searchParams = location.search as any;
+
   const {
     outboundId,
     inboundId,
@@ -23,7 +23,7 @@ const ConfirmationSection = () => {
     adults,
     children,
     infants,
-  } = searchParams;
+  } = search;
 
   const [outbound, setOutbound] = useState<Flight | null>(null);
   const [inbound, setInbound] = useState<Flight | null>(null);
@@ -109,6 +109,14 @@ const ConfirmationSection = () => {
         Loading selection...
       </div>
     );
+
+  if (!outbound && !loading) {
+    return (
+      <div className="p-20 text-center font-bold text-red-500">
+        Flight not found. Please try selecting your flight again.
+      </div>
+    );
+  }
 
   const getPrice = (flight: Flight | null) => {
     if (!flight) return 0;
