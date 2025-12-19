@@ -97,10 +97,6 @@ const BookingMenu = () => {
         let query = `/flights?populate=*`;
         if (from) query += `&filters[origin][code][$eq]=${from}`;
         if (to) query += `&filters[destination][code][$eq]=${to}`;
-        if (start) {
-          const datePart = start.split("T")[0];
-          query += `&filters[departureDate][$contains]=${datePart}`;
-        }
 
         const data = await api.getData(query);
         if (data && data.data) {
