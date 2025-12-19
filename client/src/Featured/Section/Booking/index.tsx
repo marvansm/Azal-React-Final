@@ -60,6 +60,30 @@ const BookingMenu = () => {
     initialClass || "Economy"
   );
 
+  // Sync state with search params if they change (e.g. searching from header while on booking page)
+  useEffect(() => {
+    setStartDate(start ? new Date(start) : null);
+    setEndDate(end ? new Date(end) : null);
+    setPassengers({
+      adults: Number(initialAdults) || 1,
+      children: Number(initialChildren) || 0,
+      infants: Number(initialInfants) || 0,
+    });
+    setCabinClass((initialClass as CabinClass) || "Economy");
+    // Reset selection process on new search
+    setSelectionStep("outbound");
+    setSelectedOutbound(null);
+  }, [
+    from,
+    to,
+    start,
+    end,
+    initialAdults,
+    initialChildren,
+    initialInfants,
+    initialClass,
+  ]);
+
   const totalPassengers =
     passengers.adults + passengers.children + passengers.infants;
 
@@ -96,6 +120,12 @@ const BookingMenu = () => {
     const fetchFlights = async () => {
       setLoading(true);
       setError(null);
+      console.log("Fetching flights with params:", {
+        from,
+        to,
+        start,
+        selectionStep,
+      });
       try {
         const api = new ApiServices(import.meta.env.VITE_API_URL);
         const query = `/flights?populate=*`;
@@ -129,6 +159,7 @@ const BookingMenu = () => {
             return 0;
           });
 
+          console.log("Sorted flights:", sorted.length);
           setFlights(sorted);
         }
       } catch (err) {
@@ -140,10 +171,14 @@ const BookingMenu = () => {
     };
 
     fetchFlights();
-  }, [search.from, search.to, search.start, selectionStep]);
+  }, [from, to, start, selectionStep, initialClass, initialAdults]);
 
   const handleSearch = () => {
     if (!fromLoc || !toLoc || !startDate) return;
+
+    // Reset local steps before navigation to ensure fresh start
+    setSelectionStep("outbound");
+    setSelectedOutbound(null);
 
     navigate({
       to: "/booking",

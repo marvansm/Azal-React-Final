@@ -46,9 +46,7 @@ const FlightRoadCard = ({
               isActive ? "text-[#24A8E0]" : "text-gray-400"
             }`}
           >
-            {type === "outbound"
-              ? "Choose outbound flight"
-              : "Choose inbound flight"}
+            {type === "outbound" ? "Departure flight" : "Inbound flight"}
           </p>
         </div>
         <div className="flex gap-8">

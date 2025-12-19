@@ -6,7 +6,7 @@ import { LoadingProvider } from "../Provider/LoadingProvider";
 const Layout = () => {
   const location = useLocation();
   const hideHeaderFooter =
-    location.pathname === "/cabinet" || location.pathname === "/login";
+    location.pathname === "/cabinet" || location.pathname === "/login" || location.pathname === "/confirmation";
 
   return (
     <LoadingProvider>
