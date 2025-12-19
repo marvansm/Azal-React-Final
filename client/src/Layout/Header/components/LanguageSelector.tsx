@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const languages = [
   { code: "az", name: "Azərbaycan" },
@@ -12,9 +13,14 @@ interface LanguageSelectorProps {
 }
 
 const LanguageSelector = ({ isTransparent = true }: LanguageSelectorProps) => {
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState(languages[0]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+  const [selected, setSelected] = useState(
+    languages.find((lang) => lang.code === i18n.language) || languages[0]
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,11 +38,17 @@ const LanguageSelector = ({ isTransparent = true }: LanguageSelectorProps) => {
     };
   }, []);
 
+  const changeLanguage = (lang: (typeof languages)[0]) => {
+    setSelected(lang);
+    i18n.changeLanguage(lang.code);
+    setIsOpen(false);
+  };
+
   const buttonClasses = isTransparent
     ? "text-white border-transparent bg-[hsla(0,0%,100%,.1)] hover:bg-[#40b7de]"
     : "text-[#2E3034] border-[#d9d9d9] bg-[hsla(0,0%,100%,.1)] hover:bg-[#37A6DB] hover:text-white border";
 
-  const iconColor = isTransparent ? "currentColor" : "currentColor"; // Inherits text color
+  const iconColor = isTransparent ? "currentColor" : "currentColor"; 
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -74,10 +86,7 @@ const LanguageSelector = ({ isTransparent = true }: LanguageSelectorProps) => {
               className={`w-full text-left px-4 py-2 text-sm text-[#01357e] hover:bg-gray-50 flex items-center justify-between ${
                 selected.code === lang.code ? "bg-blue-50 font-bold" : ""
               }`}
-              onClick={() => {
-                setSelected(lang);
-                setIsOpen(false);
-              }}
+              onClick={() => changeLanguage(lang)}
             >
               {lang.name}
               {selected.code === lang.code && (

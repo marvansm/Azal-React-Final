@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bookings",
+  "info": {
+    "singularName": "booking",
+    "pluralName": "bookings",
+    "displayName": "Booking",
+    "description": "Flight bookings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "flight": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::flight.flight",
+      "inversedBy": "bookings"
+    },
+    "passengerDetails": {
+      "type": "json"
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "confirmed", "cancelled"],
+      "default": "pending"
+    },
+    "totalPrice": {
+      "type": "decimal"
+    }
+  }
+}

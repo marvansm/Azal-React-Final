@@ -1,0 +1,31 @@
+{
+  "header": {
+    "currency": "Valyuta",
+    "cabinet": "Şəxsi kabinet",
+    "bookFlight": "Bilet al",
+    "checkIn": "Qeydiyyat",
+    "manageBooking": "Bronu idarə et",
+    "flightStatus": "Uçuş statusu",
+    "from": "Haradan",
+    "to": "Haraya",
+    "selectOrigin": "Yeri seçin",
+    "selectDestination": "Yeri seçin",
+    "flightDate": "Uçuş tarixi",
+    "selectDates": "Tarixləri seçin",
+    "passengers": "Sərnişinlər",
+    "search": "Axtar",
+    "payByMiles": "Millərlə ödə",
+    "addPromocode": "Promokod əlavə et",
+    "services": {
+      "baggage": "Əlavə baqaj",
+      "seat": "Yer seçimi",
+      "upgrade": "Azal Upgrade",
+      "transfer": "Transfer sifarişi",
+      "hotel": "Otel bron et",
+      "esim": "E-Sim al"
+    }
+  },
+  "footer": {
+    "allRightsReserved": "© 2024 AZAL. Bütün hüquqlar qorunur."
+  }
+}

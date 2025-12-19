@@ -12,8 +12,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "@tanstack/react-router";
 import "./datepicker-custom.css";
+import { useTranslation } from "react-i18next";
 
 const BannerSection = () => {
+  const { t } = useTranslation();
   const [fromLocation, setFromLocation] = useState<Location | null>(null);
   const [toLocation, setToLocation] = useState<Location | null>(null);
   const [modalMode, setModalMode] = useState<"from" | "to" | null>(null);
@@ -109,7 +111,7 @@ const BannerSection = () => {
   const services = [
     {
       id: 1,
-      name: "Additional baggage",
+      name: t("header.services.baggage"),
       icon: (
         <svg
           width="20"
@@ -125,7 +127,7 @@ const BannerSection = () => {
     },
     {
       id: 2,
-      name: "Select a seat",
+      name: t("header.services.seat"),
       icon: (
         <svg
           width="20"
@@ -141,7 +143,7 @@ const BannerSection = () => {
     },
     {
       id: 3,
-      name: "Azal Upgrade",
+      name: t("header.services.upgrade"),
       icon: (
         <svg
           width="20"
@@ -166,7 +168,7 @@ const BannerSection = () => {
     },
     {
       id: 4,
-      name: "Book a transfer",
+      name: t("header.services.transfer"),
       icon: (
         <svg
           fill="none"
@@ -183,7 +185,7 @@ const BannerSection = () => {
     },
     {
       id: 5,
-      name: "Book a hotel",
+      name: t("header.services.hotel"),
       icon: (
         <svg
           width="20"
@@ -202,7 +204,7 @@ const BannerSection = () => {
     },
     {
       id: 6,
-      name: "Get E-Sim",
+      name: t("header.services.esim"),
       icon: (
         <svg
           width="20"
@@ -228,17 +230,17 @@ const BannerSection = () => {
         <div className="w-full">
           <div className="flex items-center gap-2">
             <button className="bg-[#FFF] py-3 px-5 rounded-t-xl text-[#01357E] font-medium text-[16px] leading-6 cursor-pointer">
-              Book a flight
+              {t("header.bookFlight")}
             </button>
             <button className="bg-[rgb(16_16_16/20%)] py-3 px-5 rounded-t-xl text-white cursor-pointer font-medium text-[16px] leading-6">
-              Check-in
+              {t("header.checkIn")}
             </button>
             <button className="bg-[rgb(16_16_16/20%)] py-3 px-5 rounded-t-xl text-white cursor-pointer font-medium text-[16px] leading-6">
               {" "}
-              Manage booking
+              {t("header.manageBooking")}
             </button>
             <button className="bg-[rgb(16_16_16/20%)] py-3 px-5 rounded-t-xl text-white cursor-pointer font-medium text-[16px] leading-6">
-              Flight status
+              {t("header.flightStatus")}
             </button>
           </div>
           <div className="w-full rounded-r-xl rounded-b-xl bg-white p-6">
@@ -250,7 +252,7 @@ const BannerSection = () => {
                 >
                   <div className="flex flex-col">
                     <span className="text-pink-600 font-medium text-xs">
-                      From
+                      {t("header.from")}
                     </span>
                     {fromLocation ? (
                       <div>
@@ -263,7 +265,7 @@ const BannerSection = () => {
                       </div>
                     ) : (
                       <span className="font-bold text-sm text-gray-300">
-                        Select Origin
+                        {t("header.selectOrigin")}
                       </span>
                     )}
                   </div>
@@ -312,7 +314,7 @@ const BannerSection = () => {
                 >
                   <div className="flex flex-col">
                     <span className="text-gray-600 text-xs font-medium">
-                      To
+                      {t("header.to")}
                     </span>
                     {toLocation ? (
                       <div>
@@ -325,7 +327,7 @@ const BannerSection = () => {
                       </div>
                     ) : (
                       <span className="font-bold text-sm text-gray-300">
-                        Select Destination
+                        {t("header.selectDestination")}
                       </span>
                     )}
                   </div>
@@ -333,7 +335,7 @@ const BannerSection = () => {
 
                 <div className="px-6 py-4 flex flex-col justify-center w-full border-r border-gray-400 min-w-[250px]">
                   <span className="text-gray-600 text-xs mb-1">
-                    Flight date
+                    {t("header.flightDate")}
                   </span>
                   <div className="w-full relative">
                     <DatePicker
@@ -345,7 +347,7 @@ const BannerSection = () => {
                       monthsShown={2}
                       minDate={new Date()}
                       filterDate={(date) => !isDateDisabled(date)}
-                      placeholderText="Select dates"
+                      placeholderText={t("header.selectDates")}
                       className="w-full outline-none font-bold text-[#01357E] text-lg bg-transparent cursor-pointer"
                       dateFormat="dd MMM yyyy"
                     />
@@ -369,7 +371,7 @@ const BannerSection = () => {
                 >
                   <div className="flex flex-col">
                     <span className="text-gray-400 text-sm block leading-none mb-1">
-                      Passengers
+                      {t("header.passengers")}
                     </span>
                     <span className="font-bold text-[#01357E] text-lg">
                       {passengers.adults +
@@ -395,7 +397,7 @@ const BannerSection = () => {
               <div className="flex items-center gap-2.5 ">
                 <input type="checkbox" />
                 <h2 className="text-[14px] leading-5 text-[#2E3034]">
-                  Pay by Miles
+                  {t("header.payByMiles")}
                 </h2>
               </div>
               <div className="flex items-center w-[272px] h-12 border-2 border-[#2C8DC7] gap-4 rounded-lg justify-center">
@@ -409,7 +411,9 @@ const BannerSection = () => {
                 >
                   <path d="M16.6667 9.16667H10.8333V3.33333C10.8333 2.87333 10.46 2.5 10 2.5C9.54 2.5 9.16667 2.87333 9.16667 3.33333V9.16667H3.33333C2.87333 9.16667 2.5 9.54 2.5 10C2.5 10.46 2.87333 10.8333 3.33333 10.8333H9.16667V16.6667C9.16667 17.1267 9.54 17.5 10 17.5C10.46 17.5 10.8333 17.1267 10.8333 16.6667V10.8333H16.6667C17.1267 10.8333 17.5 10.46 17.5 10C17.5 9.54 17.1267 9.16667 16.6667 9.16667Z"></path>
                 </svg>
-                <button className="text-[#2C8DC7]">Add promocode</button>
+                <button className="text-[#2C8DC7]">
+                  {t("header.addPromocode")}
+                </button>
               </div>
             </div>
           </div>

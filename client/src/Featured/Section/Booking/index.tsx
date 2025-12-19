@@ -1,16 +1,124 @@
-import { Info, Plane, Search } from "lucide-react";
-import FlightRoadCard from "../../Components/FlightRoadCard";
-import PriceCard from "../../Components/FlightPriceCard";
+import { Search } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { useEffect, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
+import ApiServices from "../../../Services/api.tsx";
+import type { Flight } from "../../../Types/strapi";
+import FlightResultCard from "../../Components/FlightResultCard";
+import PriceCard from "../../Components/FlightPriceCard";
+import FlightRoadCard from "../../Components/FlightRoadCard";
+
 const BookingMenu = () => {
+  const location = useLocation();
+  const searchParams = location.search as any;
+
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const {
+    from,
+    to,
+    start,
+    adults,
+    children: childs,
+    infants,
+    class: cabinClass,
+  } = searchParams;
+
+  const totalPassengers =
+    (Number(adults) || 1) + (Number(childs) || 0) + (Number(infants) || 0);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const api = new ApiServices("http://localhost:1337/api");
+        // Build query string manually since we don't have qs
+        let query = `/flights?populate=*`;
+        if (from) query += `&filters[origin][code][$eq]=${from}`;
+        if (to) query += `&filters[destination][code][$eq]=${to}`;
+        // Date filtering (checks if departureDate starts with the day)
+        if (start) {
+          const datePart = start.split("T")[0];
+          query += `&filters[departureDate][$contains]=${datePart}`;
+        }
+
+        const data = await api.getData(query);
+        if (data && data.data) {
+          setFlights(data.data);
+        }
+      } catch (err) {
+        console.error("Error fetching flights:", err);
+        setError("Failed to load flights. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFlights();
+  }, [from, to, start]);
+
+  const handleBook = async (
+    flight: Flight,
+    seatClass: "economy" | "business"
+  ) => {
+    try {
+      const api = new ApiServices("http://localhost:1337/api");
+      const payload = {
+        data: {
+          flight: flight.id,
+          passengerDetails: {
+            adults: Number(adults) || 1,
+            children: Number(childs) || 0,
+            infants: Number(infants) || 0,
+            class: seatClass,
+          },
+          status: "pending",
+          totalPrice:
+            seatClass === "economy"
+              ? flight.attributes.priceEconomy
+              : flight.attributes.priceBusiness,
+          email: "user@example.com",
+          phone: "+994555555555",
+          // In a real app, we'd go to a Passenger Details form here
+        },
+      };
+
+      await api.PostData("/bookings", payload);
+      alert(
+        "Booking created successfully in Strapi! (Check Backend Content Manager)"
+      );
+    } catch (err) {
+      console.error("Booking failed:", err);
+      alert("Booking failed. Please check console.");
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="max-w-[1160px] mx-auto w-full">
       <div className="w-full rounded-r-xl overflow-hidden rounded-b-xl bg-transparent py-6">
         <div className="  rounded-xl overflow-hidden  bg-white">
           <div className=" border border-gray-400 flex items-center rounded-xl">
             <div className="px-6 py-4 flex items-center rounded-l-full bg-transparent w-full border-r border-gray-400 relative">
-              <span className="text-pink-600 font-medium">From</span>
+              <span className="text-pink-600 font-medium text-xs block">
+                From
+              </span>
+              <span className="text-[#01357E] font-bold ml-2">
+                {from || "Select"}
+              </span>
+
               <div className=" z-10 bg-white w-8 h-8 rounded-full border border-gray-200 px-1 absolute  right-[-17px] flex items-center justify-center shadow-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -19,9 +127,9 @@ const BookingMenu = () => {
                   className="_root_2bNiL_rETN6 _size_16_2bNiL_rETN6 w-4 h-4 "
                 >
                   <g
-                    stroke-width="1.2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     <path
                       d="m17.727 7 2.182 2.182-2.182 2.182"
@@ -44,11 +152,19 @@ const BookingMenu = () => {
               </div>
             </div>
             <div className="px-6 py-4  flex items-center w-full border-r border-gray-400">
-              <span className="text-gray-600">To</span>
+              <span className="text-gray-600 text-xs block">To</span>
+              <span className="text-[#01357E] font-bold ml-2">
+                {to || "Select"}
+              </span>
             </div>
 
             <div className="px-6 py-4  flex items-center justify-between gap-2 w-full border-r border-gray-400">
-              <span className="text-gray-600">Flight date</span>
+              <div>
+                <span className="text-gray-600 text-xs block">Flight date</span>
+                <span className="text-[#01357E] font-bold">
+                  {formatDate(start)}
+                </span>
+              </div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -67,7 +183,9 @@ const BookingMenu = () => {
                 <span className="text-gray-400 text-sm block leading-none">
                   Passengers
                 </span>
-                <span className="font-semibold">1, Ekonom</span>
+                <span className="font-semibold">
+                  {totalPassengers}, {cabinClass || "Economy"}
+                </span>
               </div>
               <span className="text-gray-600 text-sm">⌄</span>
             </div>
@@ -79,62 +197,34 @@ const BookingMenu = () => {
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-2  gap-4 ">
         <FlightRoadCard />
         <FlightRoadCard />
       </div>
+
       <Swiper
         slidesPerView={6}
         navigation={true}
         modules={[Navigation]}
         className="mySwiper  mt-10  flex items-center gap-6"
       >
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <PriceCard />
-        </SwiperSlide>
+        {[...Array(7)].map((_, i) => (
+          <SwiperSlide key={i}>
+            <PriceCard />
+          </SwiperSlide>
+        ))}
       </Swiper>
+
       <div className="mt-10">
         <div className="flex items-center gap-3 mb-6">
           <span className="text-sm text-gray-700">Sort by:</span>
+          {/* Sorting controls */}
           <div className="relative">
             <select className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm cursor-pointer">
               <option>Recommended</option>
-            </select>
-            <svg
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-          <div className="relative">
-            <select className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm cursor-pointer">
-              <option>AZN</option>
+              <option>Price (Low to High)</option>
+              <option>Duration</option>
             </select>
             <svg
               className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
@@ -151,580 +241,27 @@ const BookingMenu = () => {
             </svg>
           </div>
         </div>
+
         <div className="flex items-start flex-col gap-5">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full">
-            <div className="flex items-start justify-between gap-10 ">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center">
-                    <Plane className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm text-gray-700">
-                    Azerbaijan Airlines
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-8">
-                  <div>
-                    <div className="text-4xl font-bold text-gray-900">
-                      07:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">Baku</div>
-                    <div className="text-sm text-gray-500">Terminal 2</div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-
-                  {/* Connection line */}
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xs text-gray-500 mb-2">3 h</div>
-                    <div className="w-full relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t-2 border-gray-300"></div>
-                      </div>
-                      <div className="relative flex justify-between">
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      <svg
-                        className="w-4 h-4 text-blue-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-xs text-gray-600">
-                        Without stops
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Arrival */}
-                  <div className="text-right">
-                    <div className="text-4xl font-bold text-gray-900">
-                      09:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Istanbul, SAW
-                    </div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <svg
-                      className="w-4 h-4 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <span className="text-xs text-gray-700">J2 8103</span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <Plane className="w-4 h-4 text-gray-600" />
-                    <span className="text-xs text-gray-700">
-                      Airbus A320 Neo
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1 text-xs text-gray-600 mb-4">
-                  <span>124 kg CO₂e</span>
-                  <Info className="w-3 h-3" />
-                </div>
-              </div>
-              <div className="ml-12 flex flex-col items-end gap-3">
-                <div className="flex gap-3">
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b  border-gray-200 ">
-                      <span className="text-sm font-semibold text-[#01357E] ">
-                        ECONOMY
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-[#01357E]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b bg-[#3F5B98]  border-gray-200 ">
-                      <span className="text-sm font-semibold text-white ">
-                        BUSINESS
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          {loading && (
+            <div className="w-full text-center py-10">Loading flights...</div>
+          )}
+          {error && (
+            <div className="w-full text-center py-10 text-red-500">{error}</div>
+          )}
+          {!loading && !error && flights.length === 0 && (
+            <div className="w-full text-center py-10">
+              No flights found for your search.
             </div>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full">
-            <div className="flex items-start justify-between gap-10 ">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center">
-                    <Plane className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm text-gray-700">
-                    Azerbaijan Airlines
-                  </span>
-                </div>
+          )}
 
-                <div className="flex items-center gap-8">
-                  <div>
-                    <div className="text-4xl font-bold text-gray-900">
-                      07:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">Baku</div>
-                    <div className="text-sm text-gray-500">Terminal 2</div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-
-                  {/* Connection line */}
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xs text-gray-500 mb-2">3 h</div>
-                    <div className="w-full relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t-2 border-gray-300"></div>
-                      </div>
-                      <div className="relative flex justify-between">
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      <svg
-                        className="w-4 h-4 text-blue-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-xs text-gray-600">
-                        Without stops
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Arrival */}
-                  <div className="text-right">
-                    <div className="text-4xl font-bold text-gray-900">
-                      09:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Istanbul, SAW
-                    </div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <svg
-                      className="w-4 h-4 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <span className="text-xs text-gray-700">J2 8103</span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <Plane className="w-4 h-4 text-gray-600" />
-                    <span className="text-xs text-gray-700">
-                      Airbus A320 Neo
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1 text-xs text-gray-600 mb-4">
-                  <span>124 kg CO₂e</span>
-                  <Info className="w-3 h-3" />
-                </div>
-              </div>
-              <div className="ml-12 flex flex-col items-end gap-3">
-                <div className="flex gap-3">
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b  border-gray-200 ">
-                      <span className="text-sm font-semibold text-[#01357E] ">
-                        ECONOMY
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-[#01357E]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b bg-[#3F5B98]  border-gray-200 ">
-                      <span className="text-sm font-semibold text-white ">
-                        BUSINESS
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full">
-            <div className="flex items-start justify-between gap-10 ">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center">
-                    <Plane className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="text-sm text-gray-700">
-                    Azerbaijan Airlines
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-8">
-                  <div>
-                    <div className="text-4xl font-bold text-gray-900">
-                      07:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">Baku</div>
-                    <div className="text-sm text-gray-500">Terminal 2</div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-
-                  {/* Connection line */}
-                  <div className="flex-1 flex flex-col items-center">
-                    <div className="text-xs text-gray-500 mb-2">3 h</div>
-                    <div className="w-full relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t-2 border-gray-300"></div>
-                      </div>
-                      <div className="relative flex justify-between">
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                        <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      <svg
-                        className="w-4 h-4 text-blue-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      <span className="text-xs text-gray-600">
-                        Without stops
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Arrival */}
-                  <div className="text-right">
-                    <div className="text-4xl font-bold text-gray-900">
-                      09:35
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Istanbul, SAW
-                    </div>
-                    <div className="text-sm text-gray-500">27 Dec, Sa</div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <svg
-                      className="w-4 h-4 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                      />
-                    </svg>
-                    <span className="text-xs text-gray-700">J2 8103</span>
-                  </div>
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-                    <Plane className="w-4 h-4 text-gray-600" />
-                    <span className="text-xs text-gray-700">
-                      Airbus A320 Neo
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1 text-xs text-gray-600 mb-4">
-                  <span>124 kg CO₂e</span>
-                  <Info className="w-3 h-3" />
-                </div>
-              </div>
-              <div className="ml-12 flex flex-col items-end gap-3">
-                <div className="flex gap-3">
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b  border-gray-200 ">
-                      <span className="text-sm font-semibold text-[#01357E] ">
-                        ECONOMY
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-[#01357E]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                  <div className="border-2 bg-[#F2F5FB] border-gray-200 rounded-xl h-[205px] w-40 overflow-hidden cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-between flex-col">
-                    <div className=" flex items-center px-4 justify-between w-full py-3 border-b bg-[#3F5B98]  border-gray-200 ">
-                      <span className="text-sm font-semibold text-white ">
-                        BUSINESS
-                      </span>
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className=" px-4 py-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-bold text-[#01357E]">
-                          446
-                        </span>
-                        <span className="text-sm text-[#01357E]">.86</span>
-                        <svg
-                          className="w-5 h-5 text-gray-400 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 11l5-5m0 0l5 5m-5-5v12"
-                          />
-                        </svg>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Starting price
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {flights.map((flight) => (
+            <FlightResultCard
+              key={flight.id}
+              flight={flight}
+              onSelect={handleBook}
+            />
+          ))}
         </div>
       </div>
     </div>

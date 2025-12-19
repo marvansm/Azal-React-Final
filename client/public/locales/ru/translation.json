@@ -1,0 +1,31 @@
+{
+  "header": {
+    "currency": "Валюта",
+    "cabinet": "Личный кабинет",
+    "bookFlight": "Купить билет",
+    "checkIn": "Регистрация",
+    "manageBooking": "Управление бронированием",
+    "flightStatus": "Статус рейса",
+    "from": "Откуда",
+    "to": "Куда",
+    "selectOrigin": "Выберите город",
+    "selectDestination": "Выберите город",
+    "flightDate": "Дата вылета",
+    "selectDates": "Выберите даты",
+    "passengers": "Пассажиры",
+    "search": "Поиск",
+    "payByMiles": "Оплата милями",
+    "addPromocode": "С промокодом",
+    "services": {
+      "baggage": "Дополнительный багаж",
+      "seat": "Выбор места",
+      "upgrade": "Azal Upgrade",
+      "transfer": "Трансфер",
+      "hotel": "Отели",
+      "esim": "E-Sim"
+    }
+  },
+  "footer": {
+    "allRightsReserved": "© 2024 AZAL. Все права защищены."
+  }
+}

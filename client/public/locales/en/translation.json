@@ -1,0 +1,31 @@
+{
+  "header": {
+    "currency": "Currency",
+    "cabinet": "Personal Cabinet",
+    "bookFlight": "Book a flight",
+    "checkIn": "Check-in",
+    "manageBooking": "Manage booking",
+    "flightStatus": "Flight status",
+    "from": "From",
+    "to": "To",
+    "selectOrigin": "Select Origin",
+    "selectDestination": "Select Destination",
+    "flightDate": "Flight date",
+    "selectDates": "Select dates",
+    "passengers": "Passengers",
+    "search": "Search",
+    "payByMiles": "Pay by Miles",
+    "addPromocode": "Add promocode",
+    "services": {
+      "baggage": "Additional baggage",
+      "seat": "Select a seat",
+      "upgrade": "Azal Upgrade",
+      "transfer": "Book a transfer",
+      "hotel": "Book a hotel",
+      "esim": "Get E-Sim"
+    }
+  },
+  "footer": {
+    "allRightsReserved": "© 2024 AZAL. All rights reserved."
+  }
+}
