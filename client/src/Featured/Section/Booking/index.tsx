@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, Check } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
@@ -64,6 +64,11 @@ const BookingMenu = () => {
   const totalPassengers =
     passengers.adults + passengers.children + passengers.infants;
 
+  const [selectionStep, setSelectionStep] = useState<"outbound" | "inbound">(
+    "outbound"
+  );
+  const [selectedOutbound, setSelectedOutbound] = useState<Flight | null>(null);
+
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -117,8 +122,11 @@ const BookingMenu = () => {
             const bOrigin = getCode(bData.origin);
             const bDest = getCode(bData.destination);
 
-            const aMatch = aOrigin === from && aDest === to;
-            const bMatch = bOrigin === from && bDest === to;
+            const currentFrom = selectionStep === "outbound" ? from : to;
+            const currentTo = selectionStep === "outbound" ? to : from;
+
+            const aMatch = aOrigin === currentFrom && aDest === currentTo;
+            const bMatch = bOrigin === currentFrom && bDest === currentTo;
 
             if (aMatch && !bMatch) return -1;
             if (!aMatch && bMatch) return 1;
@@ -136,7 +144,7 @@ const BookingMenu = () => {
     };
 
     fetchFlights();
-  }, [from, to, start]);
+  }, [from, to, start, selectionStep]);
 
   const handleSearch = () => {
     if (!fromLoc || !toLoc || !startDate) return;
@@ -162,36 +170,24 @@ const BookingMenu = () => {
     setToLoc(temp);
   };
 
-  const handleBook = async (
-    flight: Flight,
-    seatClass: "economy" | "business"
-  ) => {
-    try {
-      const api = new ApiServices(import.meta.env.VITE_API_URL);
-      const payload = {
-        data: {
-          flight: flight.id,
-          passengerDetails: {
-            adults: passengers.adults,
-            children: passengers.children,
-            infants: passengers.infants,
-            class: seatClass,
-          },
-          status: "pending",
-          totalPrice:
-            seatClass === "economy"
-              ? flight.attributes.priceEconomy
-              : flight.attributes.priceBusiness,
-          email: "user@example.com",
-          phone: "+994555555555",
-        },
-      };
-
-      await api.PostData("/bookings", payload);
-      alert("Booking created successfully!");
-    } catch (err) {
-      console.error("Booking failed:", err);
-      alert("Booking failed.");
+  const handleSelect = (flight: Flight, seatClass: "economy" | "business") => {
+    if (end && selectionStep === "outbound") {
+      setSelectedOutbound(flight);
+      setSelectionStep("inbound");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // Navigate to confirmation page
+      navigate({
+        to: "/confirmation",
+        search: {
+          outboundId: selectedOutbound ? selectedOutbound.id : flight.id,
+          inboundId: selectedOutbound ? flight.id : undefined,
+          class: seatClass,
+          adults: passengers.adults,
+          children: passengers.children,
+          infants: passengers.infants,
+        } as any,
+      });
     }
   };
 
@@ -398,11 +394,24 @@ const BookingMenu = () => {
             </div>
           )}
 
+          <div className="flex items-center gap-4 mb-4">
+            <h2 className="text-2xl font-bold text-[#01357E]">
+              {selectionStep === "outbound"
+                ? "Select Outbound Flight"
+                : "Select Inbound Flight"}
+            </h2>
+            {selectedOutbound && (
+              <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-bold border border-green-100">
+                <Check className="w-4 h-4" /> Outbound Selected
+              </div>
+            )}
+          </div>
+
           {flights.map((flight) => (
             <FlightResultCard
               key={flight.id}
               flight={flight}
-              onSelect={handleBook}
+              onSelect={handleSelect}
             />
           ))}
         </div>
