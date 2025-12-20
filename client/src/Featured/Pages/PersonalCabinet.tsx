@@ -429,7 +429,7 @@ const RegisterForm = () => {
 
         <div className="relative z-10 w-full h-full flex flex-col justify-center px-12 lg:px-20 py-12">
           <div className="mb-12">
-            <h2 className="text-[20px] md:text-[24px] font-normal leading-[32px] mb-6">
+            <h2 className="text-[20px] md:text-[24px] font-normal leading-8 mb-6">
               {t("cabinet.marketing.title")}
             </h2>
             <p className="text-lg text-blue-100 font-medium">
