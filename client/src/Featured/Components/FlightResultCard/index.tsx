@@ -7,15 +7,14 @@ interface FlightResultCardProps {
 }
 
 const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
-  // Support both flat (Strapi 5) and nested (Strapi 4) structures
   const data = flight.attributes || flight;
 
-  const departureDate = new Date(data.departureDate);
-  const arrivalDate = new Date(data.arrivalDate);
+  const depDate = new Date(data.departureDate);
+  const arrDate = new Date(data.arrivalDate);
 
-  const durationMs = arrivalDate.getTime() - departureDate.getTime();
-  const durationHrs = Math.floor(durationMs / 3600000);
-  const durationMins = Math.round((durationMs % 3600000) / 60000);
+  const duration = arrDate.getTime() - depDate.getTime();
+  const hours = Math.floor(duration / 3600000);
+  const mins = Math.round((duration % 3600000) / 60000);
 
   const formatTime = (date: Date) => {
     return isNaN(date.getTime())
@@ -37,12 +36,9 @@ const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
         });
   };
 
-  // Helper to get nested or flat city/code
   const getLocInfo = (loc: any) => {
     if (!loc) return { city: "Unknown", code: "???" };
-    // Handle Strapi 4: { data: { attributes: { city } } }
     if (loc.data?.attributes) return loc.data.attributes;
-    // Handle Strapi 5: { city }
     return loc;
   };
 
@@ -65,7 +61,7 @@ const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
           <div className="flex items-center gap-8">
             <div className="min-w-[100px]">
               <div className="text-4xl font-black text-[#01357E]">
-                {formatTime(departureDate)}
+                {formatTime(depDate)}
               </div>
               <div className="text-base font-bold text-gray-900 mt-1">
                 {origin.city}
@@ -74,14 +70,13 @@ const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
                 Terminal 2
               </div>
               <div className="text-sm text-gray-400 font-medium">
-                {formatDate(departureDate)}
+                {formatDate(depDate)}
               </div>
             </div>
 
-            {/* Connection line */}
             <div className="flex-1 flex flex-col items-center">
               <div className="text-xs font-bold text-[#37A6DB] mb-2 px-3 py-1 bg-blue-50 rounded-full">
-                {durationHrs} h {durationMins > 0 ? `${durationMins} m` : ""}
+                {hours} h {mins > 0 ? `${mins} m` : ""}
               </div>
               <div className="w-full relative px-4">
                 <div className="absolute inset-0 flex items-center">
@@ -102,10 +97,9 @@ const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
               </div>
             </div>
 
-            {/* Arrival */}
             <div className="text-right min-w-[100px]">
               <div className="text-4xl font-black text-[#01357E]">
-                {formatTime(arrivalDate)}
+                {formatTime(arrDate)}
               </div>
               <div className="text-base font-bold text-gray-900 mt-1">
                 {destination.city}
@@ -114,7 +108,7 @@ const FlightResultCard = ({ flight, onSelect }: FlightResultCardProps) => {
                 {destination.code}
               </div>
               <div className="text-sm text-gray-400 font-medium">
-                {formatDate(arrivalDate)}
+                {formatDate(arrDate)}
               </div>
             </div>
           </div>

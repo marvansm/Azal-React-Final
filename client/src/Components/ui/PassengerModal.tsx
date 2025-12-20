@@ -43,16 +43,12 @@ const PassengerModal = ({
     setPassengers((prev) => {
       const newValue = prev[type] + delta;
       if (newValue < 0) return prev;
-      // Rules:
-      // - Adults min 1 (unless we allow 0 for unaccompanied minors selection, but usually 1)
-      // - Infants cannot exceed Adults? (Common rule, but let's keep it simple for now or implement if requested. Let's enforce 1 adult min)
       if (type === "adults" && newValue < 1) return prev;
 
       return { ...prev, [type]: newValue };
     });
   };
 
-  // Calculate total for display limits if needed, practically max 9
   const totalPassengers =
     passengers.adults + passengers.children + passengers.infants;
 
@@ -69,7 +65,6 @@ const PassengerModal = ({
         isOpen ? "opacity-100" : "opacity-0"
       }`}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 pointer-events-auto"
         onClick={handleApply}
@@ -93,7 +88,6 @@ const PassengerModal = ({
           </button>
         </div>
 
-        {/* Cabin Class Selection */}
         <div className="bg-gray-100 p-1 rounded-lg flex mb-8">
           <button
             className={`flex-1 py-2 text-sm font-medium rounded-md transition duration-200 ${
@@ -117,9 +111,7 @@ const PassengerModal = ({
           </button>
         </div>
 
-        {/* Passengers Counters */}
         <div className="space-y-6 mb-8">
-          {/* Adults */}
           <div className="flex items-center justify-between">
             <div>
               <div className="font-semibold text-gray-800">Adults</div>
@@ -146,7 +138,6 @@ const PassengerModal = ({
             </div>
           </div>
 
-          {/* Children */}
           <div className="flex items-center justify-between">
             <div>
               <div className="font-semibold text-gray-800">Children</div>
@@ -173,7 +164,6 @@ const PassengerModal = ({
             </div>
           </div>
 
-          {/* Infants */}
           <div className="flex items-center justify-between">
             <div>
               <div className="font-semibold text-gray-800">Infants</div>

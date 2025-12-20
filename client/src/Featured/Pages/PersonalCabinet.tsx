@@ -10,14 +10,26 @@ import {
   FileText,
   Check,
 } from "lucide-react";
-import ApiServices from "../../Services/api";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../../Layout/Header/components/LanguageSelector";
-
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "../../Provider/AuthProvider";
+import PersonalCabinetSection from "../Section/PersonalCabinet";
 
 const PersonalCabinet = () => {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <PersonalCabinetSection />;
+  }
+
+  return <RegisterForm />;
+};
+
+const RegisterForm = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,23 +73,21 @@ const PersonalCabinet = () => {
     setError(null);
 
     try {
-      const api = new ApiServices(import.meta.env.VITE_API_URL);
+      const username = `${formData.name.toLowerCase()}_${formData.surname.toLowerCase()}`;
+      const registerSuccess = await register(
+        username,
+        formData.email,
+        formData.password
+      );
 
-      const payload = {
-        username: formData.email,
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        surname: formData.surname,
-        dateOfBirth: formData.dateOfBirth,
-        gender: formData.gender,
-        documentNumber: formData.documentNumber,
-        documentExpiry: formData.documentExpiry,
-        phoneNumber: formData.phoneNumber,
-      };
-
-      await api.PostData("/auth/local/register", payload);
-      setSuccess(true);
+      if (registerSuccess) {
+        setSuccess(true);
+        setTimeout(() => {
+          navigate({ to: "/cabinet" });
+        }, 2000);
+      } else {
+        setError(t("cabinet.form.errorRegistrationFailed"));
+      }
     } catch (err: any) {
       setError(
         err.response?.data?.error?.message ||
@@ -353,7 +363,7 @@ const PersonalCabinet = () => {
                 x2="-72.722"
                 y1="633.438"
                 y2="965.79"
-                gradientUnits="userSpaceOnUse outline-none"
+                gradientUnits="userSpaceOnUse"
               >
                 <stop stopColor="#01357E"></stop>
                 <stop offset="1" stopColor="#0260E4"></stop>

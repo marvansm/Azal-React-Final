@@ -3,11 +3,13 @@ import MainLogo from "../Components/Logo/mainLogo";
 import { Hand, CreditCard, Eye, EyeOff, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "../../Layout/Header/components/LanguageSelector";
-import { Link } from "@tanstack/react-router";
-import ApiServices from "../../Services/api";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "../../Provider/AuthProvider";
 
 const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,16 +29,12 @@ const Login = () => {
     setError(null);
 
     try {
-      const api = new ApiServices(import.meta.env.VITE_API_URL);
-      const response = await api.PostData("/auth/local", {
-        identifier: formData.identifier,
-        password: formData.password,
-      });
+      const success = await login(formData.identifier, formData.password);
 
-      // Handle success - e.g., store JWT and redirect
-      if (response && response.jwt) {
-        localStorage.setItem("token", response.jwt);
-        window.location.href = "/";
+      if (success) {
+        navigate({ to: "/cabinet" });
+      } else {
+        setError("Invalid credentials. Please try again.");
       }
     } catch (err: any) {
       setError(

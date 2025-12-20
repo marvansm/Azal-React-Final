@@ -206,7 +206,6 @@ const ConfirmationSection = () => {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Outbound Flight */}
         {outbound && (
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-gray-700 pl-1">
@@ -381,7 +380,6 @@ const ConfirmationSection = () => {
           </div>
         )}
 
-        {/* Inbound Flight */}
         {inbound && (
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-gray-700 pl-1">
@@ -557,7 +555,6 @@ const ConfirmationSection = () => {
         )}
       </div>
 
-      {/* Sticky Footer */}
       <footer className="fixed bottom-0 left-0 right-0 bg-[#BE2044] text-white shadow-[0_-8px_30px_rgba(0,0,0,0.2)] z-50 py-5">
         <div className="max-w-[1240px] mx-auto flex items-center justify-between px-8">
           <div className="flex items-center gap-10">
@@ -585,7 +582,19 @@ const ConfirmationSection = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate({ to: "/" })}
+              onClick={() =>
+                navigate({
+                  to: "/passenger-details",
+                  search: {
+                    outboundId,
+                    inboundId,
+                    class: seatClassParam,
+                    adults,
+                    children,
+                    infants,
+                  } as any,
+                })
+              }
               className="border-2 border-white text-white px-20 py-3.5 rounded-xl font-bold text-lg hover:bg-white hover:text-[#BE2044] transition-all duration-300 tracking-wide outline-none"
             >
               Confirm

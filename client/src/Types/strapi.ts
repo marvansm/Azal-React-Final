@@ -16,7 +16,6 @@ export interface Flight {
   priceBusiness: number;
   origin: Location;
   destination: Location;
-  // Support for legacy Strapi 4 structure if needed during transition
   attributes?: any;
 }
 

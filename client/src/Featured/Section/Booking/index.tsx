@@ -1,12 +1,10 @@
 import { Search, Check } from "lucide-react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+
 import { useEffect, useState } from "react";
 import { useSearch, useNavigate } from "@tanstack/react-router";
 import ApiServices from "../../../Services/api.tsx";
 import type { Flight } from "../../../Types/strapi";
 import FlightResultCard from "../../Components/FlightResultCard";
-import PriceCard from "../../Components/FlightPriceCard";
 import FlightRoadCard from "../../Components/FlightRoadCard";
 import LocationModal, {
   type Location,
@@ -60,7 +58,6 @@ const BookingMenu = () => {
     initialClass || "Economy"
   );
 
-  // Sync state with search params if they change (e.g. searching from header while on booking page)
   useEffect(() => {
     setStartDate(start ? new Date(start) : null);
     setEndDate(end ? new Date(end) : null);
@@ -70,7 +67,6 @@ const BookingMenu = () => {
       infants: Number(initialInfants) || 0,
     });
     setCabinClass((initialClass as CabinClass) || "Economy");
-    // Reset selection process on new search
     setSelectionStep("outbound");
     setSelectedOutbound(null);
   }, [
@@ -110,7 +106,7 @@ const BookingMenu = () => {
           if (toObj) setToLoc(toObj);
         }
       } catch (err) {
-        console.error("Failed to fetch locations", err);
+        console.error(err);
       }
     };
     fetchLocations();
@@ -140,8 +136,8 @@ const BookingMenu = () => {
         const curFrom = selectionStep === "outbound" ? fCode : tCode;
         const curTo = selectionStep === "outbound" ? tCode : fCode;
 
-        console.log("Sorting logic - Selected Step:", selectionStep);
-        console.log(`Searching for: ${curFrom} -> ${curTo}`);
+        console.log("Step:", selectionStep);
+        console.log(`Search: ${curFrom} -> ${curTo}`);
 
         const matches = allFlights.filter((f: any) => {
           const d = f.attributes || f;
@@ -156,12 +152,19 @@ const BookingMenu = () => {
           );
         });
 
-        console.log(
-          `Found ${matches.length} matches and ${others.length} other flights.`
-        );
+        const sortByPrice = (a: any, b: any) => {
+          const priceA = (a.attributes || a).priceEconomy || 0;
+          const priceB = (b.attributes || b).priceEconomy || 0;
+          return priceA - priceB;
+        };
+
+        matches.sort(sortByPrice);
+        others.sort(sortByPrice);
+
+        console.log(`Found ${matches.length} matches`);
         setFlights([...matches, ...others]);
       } catch (err) {
-        console.error("Error fetching flights:", err);
+        console.error(err);
         setError("Failed to load flights. Please try again.");
       } finally {
         setLoading(false);
@@ -174,7 +177,6 @@ const BookingMenu = () => {
   const handleSearch = () => {
     if (!fromLoc || !toLoc || !startDate) return;
 
-    // Reset local steps before navigation to ensure fresh start
     setSelectionStep("outbound");
     setSelectedOutbound(null);
 
@@ -283,7 +285,6 @@ const BookingMenu = () => {
               </div>
             </div>
 
-            {/* To */}
             <div
               className="px-6 py-4 flex items-center w-full border-r border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
               onClick={() => setModalMode("to")}
@@ -301,7 +302,6 @@ const BookingMenu = () => {
               </div>
             </div>
 
-            {/* Date */}
             <div className="px-6 py-4 flex flex-col justify-center w-full border-r border-gray-200 min-w-[220px]">
               <span className="text-gray-600 text-xs mb-1">Flight date</span>
               <DatePicker
@@ -394,18 +394,7 @@ const BookingMenu = () => {
         />
       </div>
 
-      <Swiper
-        slidesPerView={6}
-        navigation={true}
-        modules={[Navigation]}
-        className="mySwiper  mt-10  flex items-center gap-6"
-      >
-        {[...Array(7)].map((_, i) => (
-          <SwiperSlide key={i}>
-            <PriceCard />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+  
 
       <div className="mt-10">
         <div className="flex items-center gap-3 mb-6">

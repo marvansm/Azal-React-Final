@@ -16,6 +16,8 @@
     "search": "Search",
     "payByMiles": "Pay by Miles",
     "addPromocode": "Add promocode",
+    "myBookings": "My Bookings",
+    "logout": "Logout",
     "services": {
       "baggage": "Additional baggage",
       "seat": "Select a seat",
@@ -72,7 +74,9 @@
       "back": "Back",
       "next": "Next",
       "complete": "Complete Registration",
-      "processing": "Processing..."
+      "processing": "Processing...",
+      "errorPasswordMismatch": "Passwords do not match",
+      "errorRegistrationFailed": "Registration failed. Please try again."
     },
     "success": {
       "title": "Registration Successful!",
@@ -93,5 +97,85 @@
       "registerBtn": "Register",
       "registerGoogle": "Register with Google"
     }
+  },
+  "payment": {
+    "title": "Enter card information",
+    "cardNumber": "Card number",
+    "cardPlaceholder": "•••• •••• •••• ••••",
+    "expiryDate": "Expired date",
+    "expiryPlaceholder": "MM/YY",
+    "cvc": "CVC",
+    "cvcPlaceholder": "•••",
+    "whatIsCvc": "What is CVC",
+    "pay": "Pay",
+    "processing": "Processing...",
+    "cancel": "Cancel payment",
+    "support": "24/7 (Support line)",
+    "copyright": "Copyright 2008-2025 3D Secure payment services provided by Azericard",
+    "fillAllFields": "Please fill in all card details",
+    "paymentSuccess": "Payment successful! Thank you for your booking.",
+    "cancelConfirm": "Are you sure you want to cancel?",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "dataConfirmation": {
+    "title": "Data Confirmation",
+    "timeRemaining": "Time remaining for payment",
+    "bookingNumber": "Booking number",
+    "loading": "Loading confirmation...",
+    "passengerData": "Data for one passenger",
+    "selectedFlights": "Selected Flights",
+    "passenger": "Passenger",
+    "type": "Type",
+    "dob": "Date of Birth",
+    "docNumber": "Document Number",
+    "tariffs": "Tariffs",
+    "taxes": "Taxes and Fees",
+    "total": "Total",
+    "confirm": "CONFIRM",
+    "steps": {
+      "selectFlights": "Select Flights",
+      "passengerDetails": "Passenger Details",
+      "additionalServices": "Additional Services",
+      "detailsPayment": "Details and Payment",
+      "confirmation": "Confirmation"
+    }
+  },
+  "myBookings": {
+    "title": "Personal Cabinet",
+    "welcome": "Welcome back",
+    "logout": "Logout",
+    "myBookings": "My Bookings",
+    "subtitle": "View and manage your flight reservations",
+    "noBookings": "No bookings yet",
+    "noBookingsDesc": "Start your journey by booking your first flight!",
+    "bookFlight": "Book a Flight",
+    "booking": "Booking",
+    "departure": "Departure",
+    "passengers": "Passengers",
+    "passenger": "Passenger",
+    "totalPrice": "Total Price",
+    "passengerDetails": "Passenger Details:",
+    "viewDetails": "View Details",
+    "cancelBooking": "Cancel Booking",
+    "status": {
+      "pending": "PENDING",
+      "confirmed": "CONFIRMED",
+      "cancelled": "CANCELLED"
+    }
+  },
+  "passengerInfo": {
+    "loading": "Loading passenger checkout...",
+    "loginRequired": "Please login to complete your booking",
+    "bookingFailed": "Something went wrong during booking."
+  },
+  "toast": {
+    "loginRequired": "Please login to complete your booking",
+    "bookingError": "Something went wrong during booking.",
+    "fillCardDetails": "Please fill in all card details",
+    "paymentSuccess": "Payment successful! Thank you for your booking.",
+    "bookingSuccess": "Booking created successfully",
+    "bookingCancelled": "Booking cancelled successfully",
+    "error": "An error occurred"
   }
 }

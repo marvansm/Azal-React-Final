@@ -46,3 +46,16 @@
   color: #ccc !important;
   pointer-events: none;
 }
+
+.react-datepicker__month-container {
+  float: left;
+}
+
+.react-datepicker {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.react-datepicker__month-wrapper {
+  display: flex;
+}

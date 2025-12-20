@@ -16,6 +16,8 @@
     "search": "Axtar",
     "payByMiles": "Millərlə ödə",
     "addPromocode": "Promokod əlavə et",
+    "myBookings": "Mənim Bronlarım",
+    "logout": "Çıxış",
     "services": {
       "baggage": "Əlavə baqaj",
       "seat": "Yer seçimi",
@@ -72,7 +74,9 @@
       "back": "Geri",
       "next": "İrəli",
       "complete": "Qeydiyyatı tamamla",
-      "processing": "İşlənilir..."
+      "processing": "İşlənilir...",
+      "errorPasswordMismatch": "Şifrələr uyğun gəlmir",
+      "errorRegistrationFailed": "Qeydiyyat uğursuz oldu. Yenidən cəhd edin."
     },
     "success": {
       "title": "Qeydiyyat uğurla tamamlandı!",
@@ -93,5 +97,85 @@
       "registerBtn": "Qeydiyyat",
       "registerGoogle": "Google ilə qeydiyyat"
     }
+  },
+  "payment": {
+    "title": "Kart məlumatlarını daxil edin",
+    "cardNumber": "Kart nömrəsi",
+    "cardPlaceholder": "•••• •••• •••• ••••",
+    "expiryDate": "Bitmə tarixi",
+    "expiryPlaceholder": "AA/İİ",
+    "cvc": "CVC",
+    "cvcPlaceholder": "•••",
+    "whatIsCvc": "CVC nədir",
+    "pay": "Ödə",
+    "processing": "İşlənilir...",
+    "cancel": "Ödənişi ləğv et",
+    "support": "24/7 (Dəstək xətti)",
+    "copyright": "Müəllif hüququ 2008-2025 3D Secure ödəniş xidmətləri Azericard tərəfindən təmin edilir",
+    "fillAllFields": "Zəhmət olmasa bütün kart məlumatlarını doldurun",
+    "paymentSuccess": "Ödəniş uğurla tamamlandı! Bronunuz üçün təşəkkür edirik.",
+    "cancelConfirm": "Ləğv etmək istədiyinizdən əminsiniz?",
+    "yes": "Bəli",
+    "no": "Xeyr"
+  },
+  "dataConfirmation": {
+    "title": "Məlumatların Təsdiqi",
+    "timeRemaining": "Ödəniş üçün qalan vaxt",
+    "bookingNumber": "Bron nömrəsi",
+    "loading": "Təsdiq yüklənir...",
+    "passengerData": "Bir sərnişin üçün məlumat",
+    "selectedFlights": "Seçilmiş Uçuşlar",
+    "passenger": "Sərnişin",
+    "type": "Növ",
+    "dob": "Doğum Tarixi",
+    "docNumber": "Sənəd Nömrəsi",
+    "tariffs": "Tariflər",
+    "taxes": "Vergilər və Ödənişlər",
+    "total": "Cəmi",
+    "confirm": "TƏSDİQLƏ",
+    "steps": {
+      "selectFlights": "Uçuş Seçimi",
+      "passengerDetails": "Sərnişin Məlumatları",
+      "additionalServices": "Əlavə Xidmətlər",
+      "detailsPayment": "Məlumat və Ödəniş",
+      "confirmation": "Təsdiq"
+    }
+  },
+  "myBookings": {
+    "title": "Şəxsi Kabinet",
+    "welcome": "Xoş gəldiniz",
+    "logout": "Çıxış",
+    "myBookings": "Mənim Bronlarım",
+    "subtitle": "Uçuş bronlarınızı görün və idarə edin",
+    "noBookings": "Hələ bron yoxdur",
+    "noBookingsDesc": "İlk uçuşunuzu bronlayaraq səyahətinizə başlayın!",
+    "bookFlight": "Uçuş Bron Et",
+    "booking": "Bron",
+    "departure": "Uçuş",
+    "passengers": "Sərnişinlər",
+    "passenger": "Sərnişin",
+    "totalPrice": "Ümumi Qiymət",
+    "passengerDetails": "Sərnişin Məlumatları:",
+    "viewDetails": "Ətraflı Bax",
+    "cancelBooking": "Bronu Ləğv Et",
+    "status": {
+      "pending": "GÖZLƏYİR",
+      "confirmed": "TƏSDİQLƏNDİ",
+      "cancelled": "LƏĞV EDİLDİ"
+    }
+  },
+  "passengerInfo": {
+    "loading": "Sərnişin məlumatları yüklənir...",
+    "loginRequired": "Bronu tamamlamaq üçün daxil olun",
+    "bookingFailed": "Bron zamanı xəta baş verdi."
+  },
+  "toast": {
+    "loginRequired": "Bronu tamamlamaq üçün daxil olun",
+    "bookingError": "Bron zamanı xəta baş verdi.",
+    "fillCardDetails": "Zəhmət olmasa bütün kart məlumatlarını doldurun",
+    "paymentSuccess": "Ödəniş uğurla tamamlandı! Bronunuz üçün təşəkkür edirik.",
+    "bookingSuccess": "Bron uğurla yaradıldı",
+    "bookingCancelled": "Bron uğurla ləğv edildi",
+    "error": "Xəta baş verdi"
   }
 }

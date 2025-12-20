@@ -8,7 +8,7 @@
     "description": "Flight bookings"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -16,6 +16,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::flight.flight",
+      "inversedBy": "bookings"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
       "inversedBy": "bookings"
     },
     "passengerDetails": {
@@ -30,7 +36,8 @@
     "status": {
       "type": "enumeration",
       "enum": ["pending", "confirmed", "cancelled"],
-      "default": "pending"
+      "default": "pending",
+      "required": true
     },
     "totalPrice": {
       "type": "decimal"
